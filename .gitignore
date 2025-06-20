@@ -4,6 +4,8 @@
 .env.development.local
 .env.test.local
 .env.production.local
+server/.env
+*/.env
 
 # Node.js dependencies
 node_modules/
