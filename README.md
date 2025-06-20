@@ -142,15 +142,22 @@ npm install
 
 ### 3. Environment Configuration
 Create a `.env` file in the server directory:
+```bash
+cp server/.env.example server/.env
+```
+
+Then edit `server/.env` with your actual values:
 ```env
-MONGO_URI=mongodb://localhost:27017/database_name
-# OR for MongoDB Atlas:
-# MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/database_name
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/greencommute
+# OR for local MongoDB:
+# MONGO_URI=mongodb://localhost:27017/greencommute
 
 JWT_SECRET=your_super_secret_jwt_key_here
 PORT=5000
 NODE_ENV=development
 ```
+
+**⚠️ SECURITY NOTE:** Never commit your `.env` file to version control. It contains sensitive credentials.
 
 ### 4. Database Setup
 Ensure MongoDB is running locally or configure MongoDB Atlas connection in your `.env` file.
