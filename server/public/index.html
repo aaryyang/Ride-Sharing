@@ -1,0 +1,4697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GreenCommute - Eco-friendly Ridesharing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #2d6a4f;
+      --primary-light: #95d5b2;
+      --primary-dark: #1b4332;
+      --secondary: #d8f3dc;
+      --light: #f0f4f3;
+      --accent: #40916c;
+      --text-dark: #333;
+      --text-light: #fff;
+      --success: #caffbf;
+      --warning: #ffdd00;
+      --error: #ff5a5f;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      display: flex;
+      height: 100vh;
+      background: var(--light);
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: var(--primary);
+      color: var(--text-light);
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem 1rem;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .sidebar-header h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .sidebar-header i {
+      font-size: 1.8rem;
+      margin-right: 0.7rem;
+      color: var(--secondary);
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: var(--secondary);
+      margin: 0.7rem 0;
+      padding: 0.6rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+    }
+
+    .nav-item i {
+      margin-right: 0.8rem;
+      font-size: 1.1rem;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: var(--accent);
+      color: var(--text-light);
+    }
+
+    #app-container {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+    .main-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: hidden;
+      position: relative;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: var(--text-light);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      z-index: 5;
+    }
+
+    .topbar-title {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: var (--primary-dark);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.6rem;
+      color: var(--primary-dark);
+      font-weight: bold;
+    }
+
+    .user-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var (--text-dark);
+    }
+
+    .user-profile i {
+      margin-left: 0.4rem;
+      font-size: 0.8rem;
+      color: #777;
+    }
+
+    .profile-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: var(--text-light);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      width: 180px;
+      display: none;
+      z-index: 100;
+    }
+
+    .profile-dropdown.show {
+      display: block;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      padding: 0.8rem 1rem;
+      color: var(--text-dark);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .dropdown-item:hover {
+      background: var(--light);
+    }
+
+    .dropdown-item i {
+      margin-right: 0.6rem;
+      color: var(--primary);
+    }
+
+    .main {
+      flex: 1;
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 2rem;
+      background: var(--text-light);
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .hero h1 {
+      font-size: 2.2rem;
+      color: var(--primary-dark);
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1rem;
+      color: #555;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .section {
+      background: var(--text-light);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .section h2 {
+      color: var(--primary-dark);
+      margin-bottom: 1.2rem;
+      font-size: 1.4rem;
+    }
+
+    .rides-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .ride-card {
+      background: var(--light);
+      border-radius: 8px;
+      padding: 1.2rem;
+      transition: all 0.3s ease;
+      border-left: 4px solid var(--primary-light);
+    }
+
+    .ride-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+
+    .ride-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+    }
+
+    .ride-title {
+      font-weight: 500;
+      color: var (--primary-dark);
+    }
+
+    .ride-time {
+      font-size: 0.85rem;
+      color: #777;
+    }
+
+    .ride-locations {
+      margin-bottom: 0.8rem;
+    }
+
+    .ride-locations p {
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
+      color: var(--text-dark);
+    }
+
+    .ride-stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .ride-stat {
+      display: flex;
+      align-items: center;
+    }
+
+    .ride-stat i {
+      margin-right: 0.4rem;
+      color: var(--primary);
+    }
+
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--text-light);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-outline:hover {
+      background: var(--primary);
+      color: var(--text-light);
+    }
+
+    .btn i {
+      margin-right: 0.5rem;
+    }
+
+    .btn-block {
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary-light);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(149, 213, 178, 0.2);
+    }
+
+    .form-select {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      background: var(--text-light);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .leaderboard {
+      margin-top: 2rem;
+    }
+
+    .leaderboard table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--text-light);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    .leaderboard th, .leaderboard td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    .leaderboard th {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-weight: 500;
+    }
+
+    .leaderboard tr:hover {
+      background: #e9f5ef;
+    }
+
+    .leaderboard tbody tr:nth-child(-n+3) {
+      animation: pulse 2s infinite;
+    }
+
+    #map {
+      height: 400px;
+      width: 100%;
+      border-radius: 10px;
+      border: 2px solid var(--primary-light);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-top: 1.5rem;
+    }
+
+    /* Auth Pages */
+    .auth-container {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+
+    .auth-banner {
+      flex: 1;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-light);
+      padding: 2rem;
+      position: relative;
+    }
+
+    .auth-banner-content {
+      max-width: 500px;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .auth-banner h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .auth-banner p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+    }
+
+    .auth-stats {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      margin-top: 3rem;
+    }
+
+    .auth-stat {
+      text-align: center;
+    }
+
+    .auth-stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .auth-stat-label {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .auth-form-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .auth-form {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .auth-form-header {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .auth-form-header h2 {
+      font-size: 1.8rem;
+      color: var(--primary-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .auth-form-header p {
+      color: #777;
+      font-size: 0.95rem;
+    }
+
+    .auth-switch {
+      margin-top: 1.5rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .auth-switch a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    /* Loading Screen */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255,255,255,0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+      display: none;
+    }
+
+    .loading-screen.show {
+      display: flex;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1.5s linear infinite;
+      margin-bottom: 1.5rem;
+    }
+
+    .loading-text {
+      color: var(--primary-dark);
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .loading-subtext {
+      color: #777;
+      font-size: 0.9rem;
+      text-align: center;
+      max-width: 300px;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        background-color: #e9f5ef;
+      }
+      50% {
+        background-color: var(--success);
+      }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 70px;
+        padding: 1.5rem 0.5rem;
+      }
+
+      .sidebar-header h2, .nav-item span {
+        display: none;
+      }
+
+      .sidebar-header i {
+        margin-right: 0;
+        font-size: 1.5rem;
+      }
+
+      .nav-item {
+        justify-content: center;
+        padding: 0.6rem;
+      }
+
+      .nav-item i {
+        margin-right: 0;
+      }
+
+      .auth-container {
+        flex-direction: column;
+      }
+
+      .auth-banner, .auth-form-container {
+        flex: none;
+        width: 100%;
+      }
+
+      .auth-banner {
+        height: 30%;
+      }
+
+      .auth-form-container {
+        height: 70%;
+      }
+    }
+
+    /* Payment Styles */
+    .eco-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .eco-stat-card {
+      background: linear-gradient(135deg, var(--primary-light), var(--success));
+      border-radius: 12px;
+      padding: 1.5rem;
+      color: white;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(149, 213, 178, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .eco-stat-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .eco-stat-icon {
+      font-size: 2rem;
+      margin-right: 1rem;
+      opacity: 0.8;
+    }
+
+    .eco-stat-number {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .eco-stat-label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .payment-method-card {
+      background: var(--light);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .payment-method-card.default {
+      border-color: var(--primary);
+      background: linear-gradient(135deg, #f8fff9, #e9f5ef);
+    }
+
+    .payment-method-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    }
+
+    .payment-method-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .payment-method-type {
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+      color: var(--primary-dark);
+    }
+
+    .payment-method-type i {
+      margin-right: 0.75rem;
+      font-size: 1.2rem;
+      color: var(--primary);
+    }
+
+    .payment-method-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .payment-method-details {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .payment-method-details p {
+      margin-bottom: 0.25rem;
+    }
+
+    .default-badge {
+      background: var(--success);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+    }
+
+    .btn-small {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+    }
+
+    .btn-danger {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #c0392b;
+    }
+
+    .transaction-item {
+      background: var(--light);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      border-left: 4px solid var(--primary-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .transaction-details h4 {
+      margin: 0 0 0.25rem 0;
+      color: var(--primary-dark);
+      font-size: 1rem;
+    }
+
+    .transaction-details p {
+      margin: 0;
+      color: #666;
+      font-size: 0.85rem;
+    }
+
+    .transaction-amount {
+      text-align: right;
+    }
+
+    .transaction-amount .amount {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    .transaction-amount .eco-impact {
+      font-size: 0.8rem;
+      color: var(--success);
+      margin-top: 0.25rem;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+    }
+
+    .modal.show {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #eee;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      color: var(--primary-dark);
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #999;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .close-modal:hover {
+      color: #666;
+    }
+
+    .payment-type-selector {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .payment-type-option {
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .payment-type-option:hover {
+      border-color: var(--primary-light);
+      background: #f8fff9;
+    }
+
+    .payment-type-option.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      color: white;
+    }
+
+    .payment-type-option i {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }    .payment-type-option span {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    /* Settings Styles */
+    .settings-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .setting-item {
+      background: var(--light);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .setting-item:hover {
+      border-color: var(--primary-light);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    }
+
+    .setting-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .setting-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      font-size: 1.2rem;
+      color: white;
+    }
+
+    .setting-icon.eco { background: linear-gradient(135deg, var(--primary), var(--success)); }
+    .setting-icon.notification { background: linear-gradient(135deg, #f39c12, #e67e22); }
+    .setting-icon.distance { background: linear-gradient(135deg, #3498db, #2980b9); }
+    .setting-icon.privacy { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+    .setting-icon.location { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+    .setting-icon.security { background: linear-gradient(135deg, #34495e, #2c3e50); }
+    .setting-icon.theme { background: linear-gradient(135deg, #ff6b6b, #ee5a52); }
+    .setting-icon.units { background: linear-gradient(135deg, #4ecdc4, #44a08d); }
+    .setting-icon.data { background: linear-gradient(135deg, #a8e6cf, #88d8a3); }
+
+    .setting-info h4 {
+      margin: 0 0 0.25rem 0;
+      color: var(--primary-dark);
+      font-size: 1.1rem;
+    }
+
+    .setting-info p {
+      margin: 0;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .setting-control {
+      margin-top: 1rem;
+    }
+
+    /* Toggle Switch */
+    .toggle-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+
+    .toggle-item:last-child {
+      border-bottom: none;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.3s;
+      border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: var(--primary);
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(26px);
+    }
+
+    /* Checkbox Custom */
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+    }
+
+    .checkbox-item input {
+      display: none;
+    }
+
+    .checkbox-custom {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ddd;
+      border-radius: 4px;
+      margin-right: 0.75rem;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .checkbox-item input:checked + .checkbox-custom {
+      background-color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .checkbox-item input:checked + .checkbox-custom:after {
+      content: "✓";
+      position: absolute;
+      color: white;
+      font-size: 12px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Vehicle and Notification Preferences */
+    .vehicle-preferences,
+    .notification-preferences {
+      margin-top: 0.5rem;
+    }
+
+    /* Theme Selector */
+    .theme-selector {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .theme-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      padding: 0.75rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .theme-option.selected {
+      border-color: var(--primary);
+      background: #f8fff9;
+    }
+
+    .theme-preview {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      border: 2px solid #eee;
+    }
+
+    .green-theme { background: linear-gradient(135deg, var(--primary), var(--success)); }
+    .blue-theme { background: linear-gradient(135deg, #3498db, #2980b9); }
+    .dark-theme { background: linear-gradient(135deg, #34495e, #2c3e50); }
+
+    .theme-option span {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-dark);
+    }
+
+    /* Goals Grid */
+    .goals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .goal-card {
+      background: linear-gradient(135deg, var(--primary-light), var(--success));
+      border-radius: 12px;
+      padding: 1.5rem;
+      color: white;
+      display: flex;
+      align-items: center;
+    }
+
+    .goal-icon {
+      font-size: 2rem;
+      margin-right: 1rem;
+      opacity: 0.8;
+    }
+
+    .goal-content h4 {
+      margin: 0 0 0.75rem 0;
+      font-size: 1rem;
+    }
+
+    .goal-progress {
+      margin-bottom: 1rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: rgba(255,255,255,0.9);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+
+    .btn-small {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+    }
+
+    /* Data Info */
+    .data-info {
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .data-info p {
+      margin: 0.25rem 0;
+      font-size: 0.9rem;
+    }    /* Responsive Settings */
+    @media (max-width: 768px) {
+      .settings-grid {
+        gap: 1rem;
+      }
+      
+      .setting-item {
+        padding: 1rem;
+      }
+      
+      .setting-header {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+      }
+      
+      .setting-icon {
+        margin-right: 0;
+        margin-bottom: 0.75rem;
+      }
+      
+      .goals-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .goal-card {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .goal-icon {
+        margin-right: 0;
+        margin-bottom: 0.75rem;
+      }
+      
+      .theme-selector {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      .theme-option {
+        flex-direction: row;
+        justify-content: flex-start;
+      }
+      
+      .theme-preview {
+        margin-right: 0.75rem;
+        margin-bottom: 0;
+      }
+    }    /* Dark Mode Improvements */
+    .dark-mode .section {
+      background: #2c3e50 !important;
+      color: #ecf0f1 !important;
+    }
+    
+    .dark-mode .ride-card,
+    .dark-mode .payment-method-card,
+    .dark-mode .setting-item,
+    .dark-mode .transaction-item {
+      background: #34495e !important;
+      color: #ecf0f1 !important;
+      border-color: #4ecdc4 !important;
+    }
+    
+    .dark-mode .form-input,
+    .dark-mode .form-select {
+      background: #34495e !important;
+      color: #ecf0f1 !important;
+      border-color: #4ecdc4 !important;
+    }
+    
+    .dark-mode .form-input::placeholder {
+      color: #bdc3c7 !important;
+    }
+    
+    .dark-mode .topbar {
+      background: #2c3e50 !important;
+      color: #ecf0f1 !important;
+    }
+    
+    .dark-mode .sidebar {
+      background: #1a1a1a !important;
+    }
+    
+    .dark-mode .nav-item {
+      color: #ecf0f1 !important;
+    }
+    
+    .dark-mode .nav-item:hover,
+    .dark-mode .nav-item.active {
+      background: #4ecdc4 !important;
+      color: #1a1a1a !important;
+    }
+    
+    .dark-mode .auth-container {
+      background: #1a1a1a;
+    }
+    
+    .dark-mode .auth-banner {
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+    }
+    
+    .dark-mode .auth-form-container {
+      background: #2c3e50 !important;
+    }
+    
+    .dark-mode .modal-content {
+      background: #2c3e50 !important;
+      color: #ecf0f1 !important;
+    }
+    
+    .dark-mode .loading-screen {
+      background: rgba(26, 26, 26, 0.9) !important;
+    }
+    
+    .dark-mode .leaderboard table {
+      background: #2c3e50 !important;
+    }
+    
+    .dark-mode .leaderboard th {
+      background: #34495e !important;
+      color: #ecf0f1 !important;
+    }
+    
+    .dark-mode .leaderboard td {
+      color: #ecf0f1 !important;
+      border-bottom-color: #34495e !important;
+    }
+    
+    .dark-mode .leaderboard tr:hover {
+      background: #34495e !important;
+    }
+
+    /* Safety Page Styles */
+    .safety-section {
+      margin-bottom: 2rem;
+    }
+
+    .safety-section h3 {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      color: var(--primary);
+      font-size: 1.2rem;
+    }
+
+    .safety-section h3 i {
+      margin-right: 0.5rem;
+      color: var(--accent);
+    }
+
+    .emergency-contact-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: var(--secondary);
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+    }
+
+    .contact-info .contact-name {
+      font-weight: 500;
+      color: var(--text-dark);
+    }
+
+    .contact-info .contact-phone {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .safety-features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .safety-feature-card {
+      background: var(--secondary);
+      border-radius: 8px;
+      padding: 1.5rem;
+      border-left: 4px solid var(--accent);
+    }
+
+    .safety-feature-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      background: var(--accent);
+      border-radius: 50%;
+      color: white;
+      margin-bottom: 1rem;
+    }
+
+    .safety-feature-icon i {
+      font-size: 1.2rem;
+    }
+
+    .safety-feature-content h4 {
+      margin-bottom: 0.5rem;
+      color: var(--text-dark);
+    }
+
+    .safety-feature-content p {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: var(--accent);
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(26px);
+    }
+
+    .verification-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.3rem 0.8rem;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .verification-badge.verified {
+      background: #caffbf;
+      color: #2d5016;
+    }
+
+    .verification-badge i {
+      margin-right: 0.3rem;
+    }
+
+    .safety-tips {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .safety-tip {
+      background: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .tip-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-bottom: 1rem;
+    }
+
+    .tip-icon.passenger {
+      background: #e3f2fd;
+      color: #1976d2;
+    }
+
+    .tip-icon.driver {
+      background: #fff3e0;
+      color: #f57c00;
+    }
+
+    .safety-tip h4 {
+      margin-bottom: 1rem;
+      color: var(--text-dark);
+    }
+
+    .safety-tip ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .safety-tip li {
+      position: relative;
+      padding-left: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: #666;
+    }
+
+    .safety-tip li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    .incident-report {
+      background: #fff5f5;
+      border: 1px solid #fed7d7;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .incident-report p {
+      color: #742a2a;
+      margin-bottom: 1rem;
+    }
+
+    .safety-score-card {
+      display: flex;
+      align-items: center;
+      background: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .safety-score-visual {
+      margin-right: 2rem;
+    }
+
+    .safety-score-circle {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+      color: white;
+    }
+
+    .safety-score-number {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .safety-score-label {
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+
+    .safety-score-details h4 {
+      margin-bottom: 0.5rem;
+      color: var(--text-dark);
+    }
+
+    .safety-score-details p {
+      color: #666;
+      margin-bottom: 1rem;
+    }
+
+    .safety-metrics {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .safety-metric {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .metric-label {
+      font-size: 0.8rem;
+      color: #666;
+      margin-bottom: 0.3rem;
+    }
+
+    .metric-value {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--text-dark);
+    }
+
+    /* Dark mode styles for safety page */
+    .dark-mode .safety-feature-card,
+    .dark-mode .emergency-contact-item {
+      background: #34495e !important;
+    }
+
+    .dark-mode .safety-tip,
+    .dark-mode .safety-score-card {
+      background: #34495e !important;
+    }
+
+    .dark-mode .contact-info .contact-name,
+    .dark-mode .safety-feature-content h4,
+    .dark-mode .safety-tip h4,
+    .dark-mode .safety-score-details h4,
+    .dark-mode .metric-value {
+      color: #ecf0f1 !important;
+    }
+
+    .dark-mode .contact-info .contact-phone,
+    .dark-mode .safety-feature-content p,
+    .dark-mode .safety-tip li,
+    .dark-mode .safety-score-details p,
+    .dark-mode .metric-label {
+      color: #bdc3c7 !important;
+    }
+
+    /* Responsive styles for safety page */
+    @media (max-width: 768px) {
+      .safety-features-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .safety-tips {
+        grid-template-columns: 1fr;
+      }
+      
+      .safety-score-card {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .safety-score-visual {
+        margin-right: 0;
+        margin-bottom: 1rem;
+      }
+      
+      .safety-metrics {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loading-screen" class="loading-screen">
+    <div class="loading-spinner"></div>
+    <h3 class="loading-text">Loading GreenCommute</h3>
+    <p id="loading-subtext" class="loading-subtext">Calculating CO₂ saved by our community today...</p>
+  </div>
+
+  <!-- Main Application -->
+  <div id="app-container">
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <i class="fas fa-leaf"></i>
+        <h2>GreenCommute</h2>
+      </div>
+      <a href="#" class="nav-item active" data-page="home">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="#" class="nav-item" data-page="nearby-rides">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>Nearby Rides</span>
+      </a>
+      <a href="#" class="nav-item" data-page="create-ride">
+        <i class="fas fa-car"></i>
+        <span>Create Ride</span>
+      </a>
+      <a href="#" class="nav-item" data-page="ride-history">
+        <i class="fas fa-history"></i>
+        <span>Ride History</span>
+      </a>      <a href="#" class="nav-item" data-page="payment">
+        <i class="fas fa-credit-card"></i>
+        <span>Payment</span>
+      </a>
+      <a href="#" class="nav-item" data-page="safety">
+        <i class="fas fa-shield-alt"></i>
+        <span>Safety</span>
+      </a>
+    </div>
+
+    <div class="main-container">
+      <div class="topbar">
+        <h2 class="topbar-title" id="page-title">Home</h2>
+        <div class="user-profile" id="user-profile">
+          <div class="user-avatar" id="user-avatar">U</div>
+          <span class="user-name" id="user-name">User</span>
+          <i class="fas fa-chevron-down"></i>
+          
+          <div class="profile-dropdown" id="profile-dropdown">
+            <a href="#" class="dropdown-item" data-page="profile">
+              <i class="fas fa-user"></i>
+              <span>My Profile</span>
+            </a>
+            <a href="#" class="dropdown-item" data-page="settings">
+              <i class="fas fa-cog"></i>
+              <span>Settings</span>
+            </a>
+            <a href="#" class="dropdown-item" id="logout-btn">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="main">
+        <!-- Home Page -->
+        <div id="home-page" class="page-content active">
+          <div class="hero">
+            <h1><i class="fas fa-leaf"></i> Welcome to GreenCommute</h1>
+            <p>Your eco-friendly ride-sharing companion. Plan smarter, greener commutes with people nearby. Earn green points, unlock achievements, and track your CO₂ savings—all while making the world a better place, one ride at a time.</p>
+          </div>
+
+          <div class="section">
+            <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+            <div class="form-row">
+              <button class="btn btn-primary" id="find-rides-btn">
+                <i class="fas fa-search"></i> Find Rides
+              </button>
+            </div>
+          </div>
+
+          <div class="leaderboard section">
+            <h2><i class="fas fa-trophy"></i> Eco Warriors Leaderboard</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Name</th>
+                  <th>Green Points</th>
+                  <th>Rides Shared</th>
+                  <th>CO₂ Saved (kg)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>Aarav M.</td>
+                  <td class="points" data-value="560">0</td>
+                  <td>34</td>
+                  <td>187</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>Sneha R.</td>
+                  <td class="points" data-value="510">0</td>
+                  <td>29</td>
+                  <td>165</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>Kunal P.</td>
+                  <td class="points" data-value="490">0</td>
+                  <td>27</td>
+                  <td>153</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="map"></div>
+        </div>        <!-- Nearby Rides Page -->
+        <div id="nearby-rides-page" class="page-content" style="display: none;">          <div class="section">
+            <h2>Search Rides</h2>
+            <form id="search-rides-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">From</label>
+                  <input type="text" class="form-input" id="search-origin" placeholder="Enter pickup location">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">To</label>
+                  <input type="text" class="form-input" id="search-destination" placeholder="Enter destination">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Vehicle Type</label>
+                  <select class="form-select" id="search-vehicle-type">
+                    <option value="">Any Vehicle</option>
+                    <option value="Car">Car</option>
+                    <option value="Bike">Bike</option>
+                    <option value="SUV">SUV</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn btn-primary" style="margin-top: 1.7rem;">
+                    <i class="fas fa-search"></i> Search Rides
+                  </button>
+                  <button type="button" class="btn btn-outline" id="show-all-rides-btn" style="margin-top: 0.5rem;">
+                    <i class="fas fa-list"></i> Show All Rides
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+          
+          <div class="section">
+            <h2>Available Rides</h2>
+            <div class="rides-grid" id="nearby-rides-container">
+              <!-- Dynamic content will be loaded here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Create Ride Page -->
+        <div id="create-ride-page" class="page-content" style="display: none;">
+          <div class="section">
+            <h2>Create a Ride</h2>
+            <form id="create-ride-form">
+              <div class="form-group">
+                <label class="form-label">From</label>
+                <input type="text" class="form-input" name="origin" placeholder="Enter pickup location" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">To</label>
+                <input type="text" class="form-input" name="destination" placeholder="Enter destination" required>
+              </div>              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Date</label>
+                  <input type="date" class="form-input" name="date" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Time</label>
+                  <input type="time" class="form-input" name="time" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Vehicle Type</label>
+                  <select class="form-select" name="vehicleType" required>
+                    <option value="">Select Vehicle Type</option>
+                    <option value="Compact">Compact Car</option>
+                    <option value="Sedan">Sedan</option>
+                    <option value="SUV">SUV</option>
+                    <option value="Hatchback">Hatchback</option>
+                    <option value="Electric">Electric Vehicle</option>
+                    <option value="Hybrid">Hybrid</option>
+                    <option value="Bike">Motorcycle/Bike</option>
+                    <option value="Van">Van/Mini Bus</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Number of Seats</label>
+                  <select class="form-select" name="seats" required>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">
+                <i class="fas fa-plus"></i> Create Ride
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Ride History Page -->
+        <div id="ride-history-page" class="page-content" style="display: none;">
+          <div class="section">
+            <h2>Your Ride History</h2>
+            <div id="ride-history-container">
+              <!-- Dynamic content will be loaded here -->
+            </div>
+          </div>
+        </div>        <!-- Payment Page -->
+        <div id="payment-page" class="page-content" style="display: none;">
+          <div class="section">
+            <h2><i class="fas fa-leaf"></i> Eco-Friendly Payment Methods</h2>
+            <p style="color: #666; margin-bottom: 1.5rem;">Choose sustainable payment options and earn green rewards!</p>
+            
+            <div id="payment-methods">
+              <!-- Dynamic payment methods will be loaded here -->
+            </div>
+            
+            <div class="form-group">
+              <button class="btn btn-primary btn-block" id="add-payment-btn">
+                <i class="fas fa-plus"></i> Add New Payment Method
+              </button>
+            </div>
+          </div>
+          
+          <div class="section">
+            <h2><i class="fas fa-chart-line"></i> Green Rewards Summary</h2>
+            <div class="eco-stats-grid">
+              <div class="eco-stat-card">
+                <div class="eco-stat-icon"><i class="fas fa-coins"></i></div>
+                <div class="eco-stat-content">
+                  <div class="eco-stat-number" id="total-eco-credits">0</div>
+                  <div class="eco-stat-label">Eco Credits</div>
+                </div>
+              </div>
+              <div class="eco-stat-card">
+                <div class="eco-stat-icon"><i class="fas fa-wallet"></i></div>
+                <div class="eco-stat-content">
+                  <div class="eco-stat-number" id="green-wallet-balance">₹0</div>
+                  <div class="eco-stat-label">Green Wallet</div>
+                </div>
+              </div>
+              <div class="eco-stat-card">
+                <div class="eco-stat-icon"><i class="fas fa-leaf"></i></div>
+                <div class="eco-stat-content">
+                  <div class="eco-stat-number" id="total-co2-saved">0kg</div>
+                  <div class="eco-stat-label">CO₂ Saved</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="section">
+            <h2><i class="fas fa-history"></i> Transaction History</h2>
+            <div id="transaction-history">
+              <!-- Dynamic content will be loaded here -->
+              <p>No transactions yet. Complete a ride to see your green impact!</p>
+            </div>
+          </div>
+        </div>        <!-- Profile Page -->
+        <div id="profile-page" class="page-content" style="display: none;">
+          <div class="section">
+            <h2>My Profile</h2>
+            <form id="profile-form">
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-input" id="profile-name" name="name" placeholder="Your full name">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="profile-email" name="email" placeholder="Your email" readonly>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" class="form-input" id="profile-phone" name="phone" placeholder="Your phone number">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Preferred Role</label>
+                <select class="form-select" id="profile-role" name="role">
+                  <option value="rider">Rider</option>
+                  <option value="driver">Driver</option>
+                  <option value="both">Both</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">
+                <i class="fas fa-save"></i> Save Changes
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="settings-page" class="page-content" style="display: none;">
+          <!-- Eco Preferences Section -->
+          <div class="section">
+            <h2><i class="fas fa-leaf"></i> Eco Preferences</h2>
+            <p style="color: #666; margin-bottom: 1.5rem;">Customize your green commuting experience</p>
+            
+            <div class="settings-grid">
+              <div class="setting-item">
+                <div class="setting-header">
+                  <div class="setting-icon eco"><i class="fas fa-car"></i></div>
+                  <div class="setting-info">
+                    <h4>Vehicle Preference</h4>
+                    <p>Choose your preferred eco-friendly vehicle types</p>
+                  </div>
+                </div>
+                <div class="setting-control">
+                  <div class="vehicle-preferences">
+                    <label class="checkbox-item">
+                      <input type="checkbox" id="pref-electric" checked>
+                      <span class="checkbox-custom"></span>
+                      Electric Vehicles
+                    </label>
+                    <label class="checkbox-item">
+                      <input type="checkbox" id="pref-hybrid" checked>
+                      <span class="checkbox-custom"></span>
+                      Hybrid Vehicles
+                    </label>
+                    <label class="checkbox-item">
+                      <input type="checkbox" id="pref-bike">
+                      <span class="checkbox-custom"></span>
+                      Bikes & Scooters
+                    </label>
+                    <label class="checkbox-item">
+                      <input type="checkbox" id="pref-public">
+                      <span class="checkbox-custom"></span>
+                      Public Transport Integration
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-header">
+                  <div class="setting-icon notification"><i class="fas fa-bell"></i></div>
+                  <div class="setting-info">
+                    <h4>Green Notifications</h4>
+                    <p>Get notified about eco-friendly opportunities</p>
+                  </div>
+                </div>
+                <div class="setting-control">
+                  <div class="notification-preferences">
+                    <label class="toggle-item">
+                      <span>Eco ride recommendations</span>
+                      <div class="toggle-switch">
+                        <input type="checkbox" id="notif-eco-rides" checked>
+                        <span class="toggle-slider"></span>
+                      </div>
+                    </label>
+                    <label class="toggle-item">
+                      <span>Weekly CO₂ savings report</span>
+                      <div class="toggle-switch">
+                        <input type="checkbox" id="notif-co2-report" checked>
+                        <span class="toggle-slider"></span>
+                      </div>
+                    </label>
+                    <label class="toggle-item">
+                      <span>Green achievements</span>
+                      <div class="toggle-switch">
+                        <input type="checkbox" id="notif-achievements" checked>
+                        <span class="toggle-slider"></span>
+                      </div>
+                    </label>
+                    <label class="toggle-item">
+                      <span>Eco challenges</span>
+                      <div class="toggle-switch">
+                        <input type="checkbox" id="notif-challenges">
+                        <span class="toggle-slider"></span>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-header">
+                  <div class="setting-icon distance"><i class="fas fa-route"></i></div>
+                  <div class="setting-info">
+                    <h4>Ride Preferences</h4>
+                    <p>Set your commuting preferences</p>
+                  </div>
+                </div>
+                <div class="setting-control">
+                  <div class="form-group">
+                    <label class="form-label">Maximum ride distance</label>
+                    <select class="form-select" id="max-distance">
+                      <option value="10">Within 10 km</option>
+                      <option value="25" selected>Within 25 km</option>
+                      <option value="50">Within 50 km</option>
+                      <option value="100">Within 100 km</option>
+                      <option value="unlimited">No limit</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Preferred ride time</label>
+                    <select class="form-select" id="preferred-time">
+                      <option value="morning">Morning (6-10 AM)</option>
+                      <option value="afternoon">Afternoon (12-4 PM)</option>
+                      <option value="evening" selected>Evening (5-9 PM)</option>
+                      <option value="night">Night (9 PM-12 AM)</option>
+                      <option value="anytime">Anytime</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Privacy & Security Section -->
+          <div class="section">
+            <h2><i class="fas fa-shield-alt"></i> Privacy & Security</h2>
+            <div class="settings-grid">
+              <div class="setting-item">
+                <div class="setting-header">
+                  <div class="setting-icon privacy"><i class="fas fa-eye"></i></div>
+                  <div class="setting-info">
+                    <h4>Profile Visibility</h4>
+                    <p>Control who can see your profile and ride history</p>
+                  </div>
+                </div>
+                <div class="setting-control">
+                  <select class="form-select" id="profile-visibility">
+                    <option value="public">Public - Anyone can see</option>
+                    <option value="eco-community" selected>Eco Community - Only GreenCommute users</option>
+                    <option value="connections">Connections - Only people I've ridden with</option>
+                    <option value="private">Private - Hidden from others</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-header">
+                  <div class="setting-icon location"><i class="fas fa-map-marker-alt"></i></div>
+                  <div class="setting-info">
+                    <h4>Location Sharing</h4>
+                    <p>Share your location for better ride matching</p>
+                  </div>
+                </div>
+                <div class="setting-control">
+                  <label class="toggle-item">
+                    <span>Allow location sharing</span>
+                    <div class="toggle-switch">
+                      <input type="checkbox" id="location-sharing" checked>
+                      <span class="toggle-slider"></span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-header">
+                  <div class="setting-icon security"><i class="fas fa-lock"></i></div>
+                  <div class="setting-info">
+                    <h4>Account Security</h4>
+                    <p>Manage your account security settings</p>
+                  </div>
+                </div>
+                <div class="setting-control">
+                  <button class="btn btn-outline" id="change-password-btn">
+                    <i class="fas fa-key"></i> Change Password
+                  </button>
+                  <button class="btn btn-outline" id="enable-2fa-btn" style="margin-top: 0.5rem;">
+                    <i class="fas fa-mobile-alt"></i> Enable 2FA
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- App Preferences Section -->
+          <div class="section">
+            <h2><i class="fas fa-cog"></i> App Preferences</h2>
+            <div class="settings-grid">
+              <div class="setting-item">
+                <div class="setting-header">
+                  <div class="setting-icon theme"><i class="fas fa-palette"></i></div>
+                  <div class="setting-info">
+                    <h4>Theme & Appearance</h4>
+                    <p>Customize the app's look and feel</p>
+                  </div>
+                </div>
+                <div class="setting-control">
+                  <div class="theme-selector">
+                    <label class="theme-option selected" data-theme="green">
+                      <div class="theme-preview green-theme"></div>
+                      <span>Eco Green</span>
+                    </label>
+                    <label class="theme-option" data-theme="blue">
+                      <div class="theme-preview blue-theme"></div>
+                      <span>Ocean Blue</span>
+                    </label>
+                    <label class="theme-option" data-theme="dark">
+                      <div class="theme-preview dark-theme"></div>
+                      <span>Dark Mode</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-header">
+                  <div class="setting-icon units"><i class="fas fa-ruler"></i></div>
+                  <div class="setting-info">
+                    <h4>Units & Format</h4>
+                    <p>Choose your preferred units and formats</p>
+                  </div>
+                </div>
+                <div class="setting-control">
+                  <div class="form-group">
+                    <label class="form-label">Distance Unit</label>
+                    <select class="form-select" id="distance-unit">
+                      <option value="km" selected>Kilometers (km)</option>
+                      <option value="mi">Miles (mi)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Currency</label>
+                    <select class="form-select" id="currency">
+                      <option value="INR" selected>₹ Indian Rupee</option>
+                      <option value="USD">$ US Dollar</option>
+                      <option value="EUR">€ Euro</option>
+                      <option value="GBP">£ British Pound</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-header">
+                  <div class="setting-icon data"><i class="fas fa-database"></i></div>
+                  <div class="setting-info">
+                    <h4>Data & Storage</h4>
+                    <p>Manage your app data and storage</p>
+                  </div>
+                </div>
+                <div class="setting-control">
+                  <div class="data-info">
+                    <p><strong>Cache Size:</strong> <span id="cache-size">12.5 MB</span></p>
+                    <p><strong>Offline Maps:</strong> <span id="offline-maps">5 regions</span></p>
+                  </div>
+                  <button class="btn btn-outline" id="clear-cache-btn">
+                    <i class="fas fa-trash"></i> Clear Cache
+                  </button>
+                  <button class="btn btn-outline" id="download-data-btn" style="margin-top: 0.5rem;">
+                    <i class="fas fa-download"></i> Download My Data
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Green Goals Section -->
+          <div class="section">
+            <h2><i class="fas fa-target"></i> Green Goals</h2>
+            <p style="color: #666; margin-bottom: 1.5rem;">Set and track your environmental impact goals</p>
+            
+            <div class="goals-grid">
+              <div class="goal-card">
+                <div class="goal-icon"><i class="fas fa-leaf"></i></div>
+                <div class="goal-content">
+                  <h4>Monthly CO₂ Savings</h4>
+                  <div class="goal-progress">
+                    <div class="progress-bar">
+                      <div class="progress-fill" style="width: 68%"></div>
+                    </div>
+                    <span class="progress-text">34/50 kg CO₂</span>
+                  </div>
+                  <button class="btn btn-small btn-outline">Adjust Goal</button>
+                </div>
+              </div>
+
+              <div class="goal-card">
+                <div class="goal-icon"><i class="fas fa-users"></i></div>
+                <div class="goal-content">
+                  <h4>Rides Shared</h4>
+                  <div class="goal-progress">
+                    <div class="progress-bar">
+                      <div class="progress-fill" style="width: 45%"></div>
+                    </div>
+                    <span class="progress-text">9/20 rides</span>
+                  </div>
+                  <button class="btn btn-small btn-outline">Adjust Goal</button>
+                </div>
+              </div>
+
+              <div class="goal-card">
+                <div class="goal-icon"><i class="fas fa-coins"></i></div>
+                <div class="goal-content">
+                  <h4>Green Points</h4>
+                  <div class="goal-progress">
+                    <div class="progress-bar">
+                      <div class="progress-fill" style="width: 72%"></div>
+                    </div>
+                    <span class="progress-text">720/1000 points</span>
+                  </div>
+                  <button class="btn btn-small btn-outline">Adjust Goal</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Save Settings Button -->
+          <div class="section">
+            <button class="btn btn-primary btn-block" id="save-settings-btn">
+              <i class="fas fa-save"></i> Save All Settings
+            </button>
+            <button class="btn btn-outline btn-block" id="reset-settings-btn" style="margin-top: 0.75rem;">
+              <i class="fas fa-undo"></i> Reset to Defaults
+            </button>          </div>
+        </div>
+
+        <!-- Safety Page -->
+        <div id="safety-page" class="page-content" style="display: none;">
+          <!-- Emergency Contacts Section -->
+          <div class="section">
+            <h2><i class="fas fa-shield-alt"></i> Safety Center</h2>
+            <p style="color: #666; margin-bottom: 1.5rem;">Your safety is our top priority. Manage your safety settings and emergency contacts.</p>
+            
+            <!-- Emergency Contacts -->
+            <div class="safety-section">
+              <h3><i class="fas fa-phone-alt"></i> Emergency Contacts</h3>
+              <div class="emergency-contacts" id="emergency-contacts">
+                <!-- Dynamic emergency contacts will be loaded here -->
+                <div class="emergency-contact-item">
+                  <div class="contact-info">
+                    <div class="contact-name">No emergency contacts added</div>
+                    <div class="contact-phone">Add your emergency contacts for quick access during rides</div>
+                  </div>
+                  <button class="btn btn-primary btn-small" onclick="showAddContactModal()">
+                    <i class="fas fa-plus"></i> Add Contact
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Safety Features -->
+            <div class="safety-section">
+              <h3><i class="fas fa-user-shield"></i> Safety Features</h3>
+              <div class="safety-features-grid">
+                <div class="safety-feature-card">
+                  <div class="safety-feature-icon">
+                    <i class="fas fa-route"></i>
+                  </div>
+                  <div class="safety-feature-content">
+                    <h4>Live Trip Tracking</h4>
+                    <p>Share your real-time location with trusted contacts during rides</p>
+                    <label class="toggle-switch">
+                      <input type="checkbox" id="live-tracking" checked>
+                      <span class="toggle-slider"></span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="safety-feature-card">
+                  <div class="safety-feature-icon">
+                    <i class="fas fa-bell"></i>
+                  </div>
+                  <div class="safety-feature-content">
+                    <h4>Safety Alerts</h4>
+                    <p>Get notified about safety updates and alerts in your area</p>
+                    <label class="toggle-switch">
+                      <input type="checkbox" id="safety-alerts" checked>
+                      <span class="toggle-slider"></span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="safety-feature-card">
+                  <div class="safety-feature-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                  </div>
+                  <div class="safety-feature-content">
+                    <h4>Emergency Button</h4>
+                    <p>Quick access to emergency services and contacts</p>
+                    <button class="btn btn-danger btn-small">
+                      <i class="fas fa-exclamation-triangle"></i> Emergency
+                    </button>
+                  </div>
+                </div>
+
+                <div class="safety-feature-card">
+                  <div class="safety-feature-icon">
+                    <i class="fas fa-id-card"></i>
+                  </div>
+                  <div class="safety-feature-content">
+                    <h4>Driver Verification</h4>
+                    <p>View driver's verification status and ratings</p>
+                    <span class="verification-badge verified">
+                      <i class="fas fa-check-circle"></i> Verified
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Safety Tips -->
+            <div class="safety-section">
+              <h3><i class="fas fa-lightbulb"></i> Safety Tips</h3>
+              <div class="safety-tips">
+                <div class="safety-tip">
+                  <div class="tip-icon passenger"><i class="fas fa-user"></i></div>
+                  <div class="tip-content">
+                    <h4>For Passengers</h4>
+                    <ul>
+                      <li>Verify the driver and vehicle details before getting in</li>
+                      <li>Share your trip details with a trusted contact</li>
+                      <li>Sit in the back seat when riding alone</li>
+                      <li>Keep your phone charged and accessible</li>
+                      <li>Trust your instincts - if something feels wrong, speak up</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="safety-tip">
+                  <div class="tip-icon driver"><i class="fas fa-steering-wheel"></i></div>
+                  <div class="tip-content">
+                    <h4>For Drivers</h4>
+                    <ul>
+                      <li>Keep your vehicle well-maintained and clean</li>
+                      <li>Verify passenger identity before starting the trip</li>
+                      <li>Follow traffic rules and drive safely</li>
+                      <li>Keep emergency contacts and first aid kit in your car</li>
+                      <li>Report any suspicious behavior immediately</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Incident Reporting -->
+            <div class="safety-section">
+              <h3><i class="fas fa-flag"></i> Report an Incident</h3>
+              <div class="incident-report">
+                <p>If you've experienced or witnessed any safety concerns, please report them immediately.</p>
+                <button class="btn btn-danger" onclick="showIncidentReportModal()">
+                  <i class="fas fa-flag"></i> Report Incident
+                </button>
+              </div>
+            </div>            <!-- Safety Score -->
+            <div class="safety-section">
+              <h3><i class="fas fa-star"></i> Your Safety Score</h3>
+              <div class="safety-score-card">
+                <div class="safety-score-visual">
+                  <div class="safety-score-circle">
+                    <div class="safety-score-number" id="safety-score-display">--</div>
+                    <div class="safety-score-label">out of 5</div>
+                  </div>
+                </div>
+                <div class="safety-score-details">
+                  <h4 id="safety-score-title">Loading...</h4>
+                  <p>Your safety score is based on ride completion rate, user feedback, and incident reports.</p>
+                  <div class="safety-metrics">
+                    <div class="safety-metric">
+                      <span class="metric-label">Completed Rides</span>
+                      <span class="metric-value" id="total-rides-metric">--</span>
+                    </div>
+                    <div class="safety-metric">
+                      <span class="metric-label">Safety Reports</span>
+                      <span class="metric-value" id="safety-reports-metric">--</span>
+                    </div>
+                    <div class="safety-metric">
+                      <span class="metric-label">Positive Feedback</span>
+                      <span class="metric-value" id="positive-feedback-metric">--%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Emergency Contact Modal -->
+  <div id="add-contact-modal" class="modal-overlay" style="display: none;">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Emergency Contact</h3>
+        <button class="close-btn" onclick="hideAddContactModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="add-contact-form">
+          <div class="form-group">
+            <label class="form-label">Contact Name</label>
+            <input type="text" class="form-input" id="contact-name" placeholder="Enter full name" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="tel" class="form-input" id="contact-phone" placeholder="Enter phone number" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Relationship</label>
+            <select class="form-select" id="contact-relationship" required>
+              <option value="">Select relationship</option>
+              <option value="family">Family Member</option>
+              <option value="friend">Friend</option>
+              <option value="colleague">Colleague</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="hideAddContactModal()">Cancel</button>
+        <button type="submit" form="add-contact-form" class="btn btn-primary">Add Contact</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Incident Report Modal -->
+  <div id="incident-report-modal" class="modal-overlay" style="display: none;">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Report Safety Incident</h3>
+        <button class="close-btn" onclick="hideIncidentReportModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="incident-report-form">
+          <div class="form-group">
+            <label class="form-label">Incident Type</label>
+            <select class="form-select" id="incident-type" required>
+              <option value="">Select incident type</option>
+              <option value="harassment">Harassment</option>
+              <option value="reckless-driving">Reckless Driving</option>
+              <option value="vehicle-issue">Vehicle Safety Issue</option>
+              <option value="route-deviation">Unauthorized Route Change</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ride ID (if applicable)</label>
+            <input type="text" class="form-input" id="incident-ride-id" placeholder="Enter ride ID">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-input" id="incident-description" rows="4" placeholder="Please describe the incident in detail..." required></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Severity</label>
+            <select class="form-select" id="incident-severity" required>
+              <option value="">Select severity</option>
+              <option value="low">Low - Minor concern</option>
+              <option value="medium">Medium - Safety concern</option>
+              <option value="high">High - Serious safety issue</option>
+              <option value="emergency">Emergency - Immediate danger</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="hideIncidentReportModal()">Cancel</button>
+        <button type="submit" form="incident-report-form" class="btn btn-danger">Submit Report</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Page -->
+  <div id="login-page" class="auth-container" style="display: none;">
+    <div class="auth-banner">
+      <div class="auth-banner-content">
+        <h1><i class="fas fa-leaf"></i> GreenCommute</h1>
+        <p>Join thousands of eco-conscious commuters who are reducing their carbon footprint while saving money and making new connections.</p>
+        
+        <div class="auth-stats">
+          <div class="auth-stat">
+            <div class="auth-stat-number">15K+</div>
+            <div class="auth-stat-label">Active Users</div>
+          </div>
+          <div class="auth-stat">
+            <div class="auth-stat-number">30K+</div>
+            <div class="auth-stat-label">Rides Shared</div>
+          </div>
+          <div class="auth-stat">
+            <div class="auth-stat-number">250T</div>
+            <div class="auth-stat-label">CO₂ Saved</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="auth-form-container">
+      <div class="auth-form">
+        <div class="auth-form-header">
+          <h2>Welcome Back!</h2>
+          <p>Log in to your GreenCommute account</p>
+        </div>
+        
+        <form id="login-form">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="login-email" placeholder="Enter your email" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" id="login-password" placeholder="Enter your password" required />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">
+            <i class="fas fa-sign-in-alt"></i> Login
+          </button>
+        </form>
+        
+        <div class="auth-switch">
+          Don't have an account? <a href="#" id="switch-to-register">Register Now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Register Page -->
+  <div id="register-page" class="auth-container" style="display: none;">
+    <div class="auth-banner">
+      <div class="auth-banner-content">
+        <h1><i class="fas fa-leaf"></i> GreenCommute</h1>
+        <p>Join our community of eco-conscious commuters and start making a difference today. Share rides, reduce emissions, and connect with like-minded people.</p>
+        
+        <div class="auth-stats">
+          <div class="auth-stat">
+            <div class="auth-stat-number">15K+</div>
+            <div class="auth-stat-label">Active Users</div>
+          </div>
+          <div class="auth-stat">
+            <div class="auth-stat-number">30K+</div> <!-- Fixed closing tag -->
+            <div class="auth-stat-label">Rides Shared</div>
+          </div>
+          <div class="auth-stat">
+            <div class="auth-stat-number">250T</div>
+            <div class="auth-stat-label">CO₂ Saved</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="auth-form-container">
+      <div class="auth-form">
+        <div class="auth-form-header">
+          <h2>Create Your Account</h2>
+          <p>Join GreenCommute and start commuting responsibly</p>
+        </div>
+        
+        <form id="register-form">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-input" name="name" placeholder="Your full name" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" name="email" placeholder="Your email address" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" name="password" placeholder="Create a password" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">I want to join as</label>
+            <select class="form-select" name="role" required>
+              <option value="">Select Role</option>
+              <option value="driver">Driver</option>
+              <option value="rider">Rider</option>
+              <option value="both">Both</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">
+            <i class="fas fa-user-plus"></i> Create Account
+          </button>
+        </form>
+        
+        <div class="auth-switch">
+          Already have an account? <a href="#" id="switch-to-login">Login Instead</a>
+        </div>
+      </div>    </div>
+  </div>
+
+  <!-- Add Payment Method Modal -->
+  <div id="payment-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fas fa-plus"></i> Add Payment Method</h3>
+        <button class="close-modal" id="close-payment-modal">×</button>
+      </div>
+      
+      <form id="add-payment-form">
+        <div class="form-group">
+          <label class="form-label">Choose Payment Type</label>
+          <div class="payment-type-selector">
+            <div class="payment-type-option" data-type="credit_card">
+              <i class="fas fa-credit-card"></i>
+              <span>Credit Card</span>
+            </div>
+            <div class="payment-type-option" data-type="debit_card">
+              <i class="fas fa-credit-card"></i>
+              <span>Debit Card</span>
+            </div>
+            <div class="payment-type-option" data-type="upi">
+              <i class="fas fa-mobile-alt"></i>
+              <span>UPI</span>
+            </div>
+            <div class="payment-type-option" data-type="paypal">
+              <i class="fab fa-paypal"></i>
+              <span>PayPal</span>
+            </div>
+            <div class="payment-type-option" data-type="green_wallet">
+              <i class="fas fa-leaf"></i>
+              <span>Green Wallet</span>
+            </div>
+            <div class="payment-type-option" data-type="eco_credits">
+              <i class="fas fa-coins"></i>
+              <span>Eco Credits</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Details (for credit/debit cards) -->
+        <div id="card-details" class="payment-details" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">Card Holder Name</label>
+            <input type="text" class="form-input" name="cardHolderName" placeholder="Name on card">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Card Number</label>
+            <input type="text" class="form-input" name="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Expiry Month</label>
+              <select class="form-select" name="expiryMonth">
+                <option value="">Month</option>
+                <option value="1">01</option>
+                <option value="2">02</option>
+                <option value="3">03</option>
+                <option value="4">04</option>
+                <option value="5">05</option>
+                <option value="6">06</option>
+                <option value="7">07</option>
+                <option value="8">08</option>
+                <option value="9">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Expiry Year</label>
+              <select class="form-select" name="expiryYear">
+                <option value="">Year</option>
+                <!-- Years will be populated by JavaScript -->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- UPI Details -->
+        <div id="upi-details" class="payment-details" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">UPI ID</label>
+            <input type="text" class="form-input" name="upiId" placeholder="yourname@paytm">
+          </div>
+        </div>
+
+        <!-- PayPal Details -->
+        <div id="paypal-details" class="payment-details" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">PayPal Email</label>
+            <input type="email" class="form-input" name="email" placeholder="your@email.com">
+          </div>
+        </div>
+
+        <!-- Green Wallet Info -->
+        <div id="green-wallet-details" class="payment-details" style="display: none;">
+          <div style="background: linear-gradient(135deg, var(--primary-light), var(--success)); color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+            <h4 style="margin: 0 0 0.5rem 0;"><i class="fas fa-leaf"></i> Green Wallet</h4>
+            <p style="margin: 0; font-size: 0.9rem;">Earn eco-friendly rewards and use them for future rides! Starting bonus: ₹100</p>
+          </div>
+        </div>
+
+        <!-- Eco Credits Info -->
+        <div id="eco-credits-details" class="payment-details" style="display: none;">
+          <div style="background: linear-gradient(135deg, var(--accent), #f39c12); color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+            <h4 style="margin: 0 0 0.5rem 0;"><i class="fas fa-coins"></i> Eco Credits</h4>
+            <p style="margin: 0; font-size: 0.9rem;">Earn credits by sharing rides and reducing CO₂! Starting bonus: 50 credits</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            <input type="checkbox" name="isDefault" style="margin-right: 0.5rem;"> 
+            Set as default payment method
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          <i class="fas fa-plus"></i> Add Payment Method
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // Loading screen messages related to sustainability
+    const loadingMessages = [
+      "Calculating CO₂ saved by our community today...",
+      "Finding eco-friendly routes near you...",
+      "Connecting you with green commuters in your area...",
+      "Preparing your sustainability dashboard...",
+      "Counting trees planted thanks to our community...",
+      "Reducing carbon footprints one ride at a time..."
+    ];
+
+    // Show loading screen with random sustainability message
+    function showLoading() {
+      const loadingScreen = document.getElementById('loading-screen');
+      const loadingSubtext = document.getElementById('loading-subtext');
+      const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+      loadingSubtext.textContent = randomMessage;
+      loadingScreen.classList.add('show');
+    }
+
+    // Hide loading screen
+    function hideLoading() {
+      const loadingScreen = document.getElementById('loading-screen');
+      loadingScreen.classList.remove('show');
+    }
+
+    // Check authentication status
+    function checkAuth() {
+      const token = localStorage.getItem('authToken');
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+      if (token && currentUser) {
+        // User is authenticated, show the app
+        document.getElementById('app-container').style.display = 'flex';
+        document.getElementById('login-page').style.display = 'none';
+        document.getElementById('register-page').style.display = 'none';
+
+        updateUserProfile(currentUser);
+        loadDashboardData();
+        loadNearbyRides();
+        loadRideHistory();
+        initMap();
+      } else {
+        // User is not authenticated, show the login page
+        document.getElementById('app-container').style.display = 'none';
+        document.getElementById('login-page').style.display = 'flex';
+        document.getElementById('register-page').style.display = 'none';
+      }
+    }
+
+    // Update user profile in UI
+    function updateUserProfile(user) {
+      if (!user) return;
+      
+      const userName = document.getElementById('user-name');
+      const userAvatar = document.getElementById('user-avatar');
+      
+      userName.textContent = user.name || 'User';
+      userAvatar.textContent = (user.name || 'U').charAt(0).toUpperCase();
+      
+      // Update profile form if on profile page
+      const profileName = document.getElementById('profile-name');
+      const profileEmail = document.getElementById('profile-email');
+      const profileRole = document.getElementById('profile-role');
+      
+      if (profileName && profileEmail && profileRole) {
+        profileName.value = user.name || '';
+        profileEmail.value = user.email || '';
+        profileRole.value = user.role || 'rider';
+      }
+    }
+
+    let map; // Define it globally
+
+    function initMap() {
+      // Check if map already exists
+      if (map) {
+        map.remove(); // Properly remove the existing map instance
+      }
+
+      // Initialize the map with a default location (e.g., Delhi)
+      map = L.map('map').setView([28.6139, 77.2090], 12);
+
+      // Add OpenStreetMap tiles
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      // Use Geolocation API to get the user's live location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const userCoords = [position.coords.latitude, position.coords.longitude];
+            map.setView(userCoords, 14); // Center the map on the user's location
+
+            // Add a marker for the user's location
+            const userIcon = L.icon({
+              iconUrl: 'https://cdn-icons-png.flaticon.com/512/1946/1946429.png', // Human icon URL
+
+              iconSize: [40, 40], // Size of the icon
+              iconAnchor: [20, 40], // Anchor point of the icon
+              popupAnchor: [0, -40] // Popup position relative to the icon
+            });
+
+            L.marker(userCoords, { icon: userIcon })
+              .addTo(map)
+              .bindPopup('<b>You are here!</b>')
+              .openPopup();
+
+            // Define leaderboard members with random nearby coordinates
+            const leaderboardMembers = [
+              {
+                name: 'Aarav M.',
+                greenPoints: 560,
+                ridesShared: 34,
+                coords: getRandomNearbyCoords(userCoords)
+              },
+              {
+                name: 'Sneha R.',
+                greenPoints: 510,
+                ridesShared: 29,
+                coords: getRandomNearbyCoords(userCoords)
+              },
+              {
+                name: 'Kunal P.',
+                greenPoints: 490,
+                ridesShared: 27,
+                coords: getRandomNearbyCoords(userCoords)
+              }
+            ];
+
+            // Add markers for each leaderboard member with human icons
+            const humanIcon = L.icon({
+              iconUrl: 'https://cdn-icons-png.flaticon.com/512/1946/1946429.png', // Human icon URL
+              iconSize: [40, 40], // Size of the icon
+              iconAnchor: [20, 40], // Anchor point of the icon
+              popupAnchor: [0, -40] // Popup position relative to the icon
+            });
+
+            leaderboardMembers.forEach((member) => {
+              const marker = L.marker(member.coords, { icon: humanIcon }).addTo(map);
+
+              // Add a popup to the marker
+              marker.bindPopup(`
+                <b>${member.name}</b><br>
+                🌟 Green Points: ${member.greenPoints}<br>
+                🚗 Rides Shared: ${member.ridesShared}
+              `);
+            });
+          },
+          (error) => {
+            console.error('Error getting location:', error);
+            alert('Unable to fetch your location. Please enable location services.');
+          }
+        );
+      } else {
+        alert('Geolocation is not supported by your browser.');
+      }
+    }
+
+    // Function to generate random nearby coordinates
+    function getRandomNearbyCoords([lat, lng]) {
+      const randomOffset = () => (Math.random() - 0.5) * 0.02; // Random offset within ~2km
+      return [lat + randomOffset(), lng + randomOffset()];
+    }
+
+    // Load dashboard data
+    function loadDashboardData() {
+      // Animate leaderboard points
+      document.querySelectorAll('.points').forEach(el => {
+        const endValue = parseInt(el.getAttribute('data-value'));
+        let current = 0;
+        const step = Math.ceil(endValue / 60);
+
+        const interval = setInterval(() => {
+          current += step;
+          if (current >= endValue) {
+            el.textContent = endValue;
+            clearInterval(interval);
+          } else {
+            el.textContent = current;
+          }
+        }, 20);
+      });
+    }    // Load nearby rides
+    async function loadNearbyRides(searchParams = {}) {
+      showLoading();
+      
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          hideLoading();
+          return;
+        }
+
+        // Build search query parameters
+        const queryParams = new URLSearchParams();
+        if (searchParams.origin) queryParams.append('origin', searchParams.origin);
+        if (searchParams.destination) queryParams.append('destination', searchParams.destination);
+        if (searchParams.vehicleType) queryParams.append('vehicleType', searchParams.vehicleType);
+
+        // If no search params, we'll use the findMatches endpoint, otherwise use search endpoint
+        let response;        if (Object.keys(searchParams).length > 0 && (searchParams.origin || searchParams.destination)) {
+          response = await fetch(`http://localhost:5000/api/rides/search?${queryParams.toString()}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });        } else {
+          // Use findMatches endpoint with empty search to get all available rides
+          response = await fetch('http://localhost:5000/api/rides/match', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+              // Note: No Authorization header as this endpoint doesn't require it
+            },
+            body: JSON.stringify({
+              origin: searchParams.origin || '',
+              destination: searchParams.destination || ''
+            })
+          });
+        }
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch rides');
+        }
+
+        const rides = await response.json();
+        const nearbyRidesContainer = document.getElementById('nearby-rides-container');
+        
+        if (!nearbyRidesContainer) {
+          hideLoading();
+          return;
+        }
+        
+        nearbyRidesContainer.innerHTML = '';
+        
+        if (rides.length === 0) {
+          nearbyRidesContainer.innerHTML = '<p>No rides available matching your criteria. Try adjusting your search.</p>';
+        } else {
+          rides.forEach(ride => {
+            const departureDate = new Date(ride.departureTime);
+            const formattedDate = departureDate.toLocaleDateString();
+            const formattedTime = departureDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            nearbyRidesContainer.innerHTML += `
+              <div class="ride-card" data-ride-id="${ride._id}">
+                <div class="ride-header">
+                  <div class="ride-title">${ride.driver?.name || 'Unknown Driver'}'s Ride</div>
+                  <div class="ride-time">${formattedDate}, ${formattedTime}</div>
+                </div>
+                <div class="ride-locations">
+                  <p><i class="fas fa-map-marker-alt" style="color: green;"></i> From: ${ride.origin}</p>
+                  <p><i class="fas fa-map-marker-alt" style="color: red;"></i> To: ${ride.destination}</p>
+                </div>
+                <div class="ride-stats">
+                  <div class="ride-stat"><i class="fas fa-user"></i> ${ride.seatsAvailable} seats</div>
+                  <div class="ride-stat"><i class="fas fa-car"></i> ${ride.vehicleType || 'Car'}</div>
+                  <div class="ride-stat"><i class="fas fa-star"></i> ${ride.driver?.rating || 'New'}</div>
+                </div>
+                <button class="btn btn-primary btn-block book-ride-btn" data-ride-id="${ride._id}">
+                  Book This Ride
+                </button>
+              </div>
+            `;
+          });
+        }
+        
+        // Add event listeners to book buttons
+        document.querySelectorAll('.book-ride-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const rideId = this.getAttribute('data-ride-id');
+            bookRide(rideId);
+          });
+        });
+        
+      } catch (error) {
+        console.error('Error loading rides:', error);
+        const nearbyRidesContainer = document.getElementById('nearby-rides-container');
+        if (nearbyRidesContainer) {
+          nearbyRidesContainer.innerHTML = '<p>Error loading rides. Please try again later.</p>';
+        }
+      } finally {
+        hideLoading();
+      }
+    }// Load ride history
+    async function loadRideHistory() {
+      showLoading();
+
+      try {
+        const token = localStorage.getItem('authToken');
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        
+        if (!token || !currentUser) {
+          hideLoading();
+          return;
+        }
+
+        const response = await fetch(`http://localhost:5000/api/rides/history/${currentUser._id}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch ride history');
+        }
+
+        const rides = await response.json();
+        const rideHistoryContainer = document.getElementById('ride-history-container');
+        
+        if (!rideHistoryContainer) {
+          hideLoading();
+          return;
+        }
+
+        rideHistoryContainer.innerHTML = '';
+
+        if (rides.length === 0) {
+          rideHistoryContainer.innerHTML = '<p>No rides found. Book a ride to see it here.</p>';
+        } else {
+          rides.forEach((ride) => {
+            let departureTime, formattedDate, formattedTime;
+            
+            if (ride.departureTime) {
+              departureTime = new Date(ride.departureTime);
+              formattedDate = departureTime.toLocaleDateString();
+              formattedTime = departureTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            } else if (ride.createdAt) {
+              departureTime = new Date(ride.createdAt);
+              formattedDate = departureTime.toLocaleDateString();
+              formattedTime = departureTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            } else {
+              formattedDate = 'Unknown date';
+              formattedTime = '';
+            }            // Handle different ride types (active vs completed)
+            let driverName = 'Unknown Driver';
+            let isCurrentUserDriver = false;
+            
+            if (ride.driver && ride.driver.name) {
+              driverName = ride.driver.name;
+              isCurrentUserDriver = ride.driver._id === currentUser._id;
+            } else if (ride.driver && typeof ride.driver === 'string') {
+              driverName = 'Driver';
+              isCurrentUserDriver = ride.driver === currentUser._id;
+            }
+
+            rideHistoryContainer.innerHTML += `
+              <div class="ride-card">
+                <div class="ride-header">
+                  <div class="ride-title">${driverName}'s Ride</div>
+                  <div class="ride-time">${formattedDate} ${formattedTime}</div>
+                </div>
+                <div class="ride-locations">
+                  <p><i class="fas fa-map-marker-alt" style="color: green;"></i> From: ${ride.origin || 'Unknown'}</p>
+                  <p><i class="fas fa-map-marker-alt" style="color: red;"></i> To: ${ride.destination || 'Unknown'}</p>
+                </div>                <div class="ride-stats">                  <div class="ride-stat">
+                    <i class="fas fa-info-circle"></i> 
+                    Status: &nbsp;<span style="color: ${
+                      ride.status === 'completed' ? 'green' : 
+                      ride.status === 'active' ? 'orange' :
+                      ride.status === 'cancelled' ? 'red' : 'gray'
+                    }">${(ride.status || 'Unknown').charAt(0).toUpperCase() + (ride.status || 'Unknown').slice(1)}</span>
+                  </div>
+                  ${ride.seatsAvailable !== undefined ? `<div class="ride-stat"><i class="fas fa-user"></i> ${ride.seatsAvailable} seats left</div>` : ''}
+                  ${ride.distanceKm ? `<div class="ride-stat"><i class="fas fa-route"></i> ${ride.distanceKm} km</div>` : ''}
+                  ${ride.co2SavedKg ? `<div class="ride-stat"><i class="fas fa-leaf"></i> ${ride.co2SavedKg.toFixed(2)} kg CO₂ saved</div>` : ''}
+                </div>
+                ${ride.status === 'active' && isCurrentUserDriver ? `
+                  <button class="btn btn-outline btn-block complete-ride-btn" data-ride-id="${ride._id}" style="margin-top: 0.5rem;">
+                    <i class="fas fa-check-circle"></i> Mark as Completed
+                  </button>
+                ` : ''}
+              </div>
+            `;          });
+        }
+        
+        // Add event listeners to complete ride buttons
+        document.querySelectorAll('.complete-ride-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const rideId = this.getAttribute('data-ride-id');
+            completeRide(rideId);
+          });
+        });
+        
+      } catch (error) {
+        console.error('Error loading ride history:', error);
+        const rideHistoryContainer = document.getElementById('ride-history-container');
+        if (rideHistoryContainer) {
+          rideHistoryContainer.innerHTML = '<p>Error loading ride history. Please try again later.</p>';
+        }
+      } finally {
+        hideLoading();
+      }
+    }    // Book a ride
+    async function bookRide(rideId) {
+      showLoading();
+
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          alert('Please login to book a ride');
+          hideLoading();
+          return;
+        }
+
+        const response = await fetch(`http://localhost:5000/api/rides/${rideId}/join`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          alert('Ride booked successfully!');
+          // Refresh the nearby rides and ride history
+          await loadNearbyRides();
+          await loadRideHistory();
+        } else {
+          alert(data.message || 'Failed to book ride');
+        }
+      } catch (error) {
+        console.error('Error booking ride:', error);
+        alert('Error booking ride. Please try again.');
+      } finally {
+        hideLoading();
+      }    }
+
+    // Complete a ride
+    async function completeRide(rideId) {
+      showLoading();
+
+      try {
+        const token = localStorage.getItem('authToken');
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        
+        if (!token || !currentUser) {
+          alert('Please login to complete a ride');
+          hideLoading();
+          return;
+        }
+
+        // Prompt for ride details
+        const distanceKm = prompt('Enter the distance traveled (in km):');
+        if (!distanceKm || isNaN(distanceKm)) {
+          alert('Please enter a valid distance');
+          hideLoading();
+          return;
+        }
+
+        const riderRating = prompt('Rate the passengers (1-5 stars):');
+        if (!riderRating || isNaN(riderRating) || riderRating < 1 || riderRating > 5) {
+          alert('Please enter a valid rating between 1-5');
+          hideLoading();
+          return;
+        }
+
+        const response = await fetch('http://localhost:5000/api/rides/complete', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            rideId: rideId,
+            riderId: currentUser._id, // For simplicity, using current user as rider
+            driverId: currentUser._id,
+            distanceKm: parseFloat(distanceKm),
+            riderRating: parseInt(riderRating),
+            driverRating: 5 // Default driver rating
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert('Ride completed successfully! CO₂ saved and green points earned.');
+          // Refresh the ride history
+          await loadRideHistory();
+        } else {
+          alert(data.message || 'Failed to complete ride');
+        }
+      } catch (error) {
+        console.error('Error completing ride:', error);
+        alert('Error completing ride. Please try again.');
+      } finally {
+        hideLoading();
+      }
+    }
+
+    // Load payment methods
+    async function loadPaymentMethods() {
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) return;
+
+        const response = await fetch('http://localhost:5000/api/rides/payment/methods', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch payment methods');
+        }
+
+        const data = await response.json();
+        const paymentMethodsContainer = document.getElementById('payment-methods');
+        
+        if (!paymentMethodsContainer) return;
+
+        // Clear existing content except the add button
+        const addButton = paymentMethodsContainer.querySelector('#add-payment-btn').parentNode;
+        paymentMethodsContainer.innerHTML = '';
+        paymentMethodsContainer.appendChild(addButton);
+
+        if (data.paymentMethods && data.paymentMethods.length > 0) {
+          // Update eco stats
+          updateEcoStats(data.paymentMethods);
+
+          data.paymentMethods.forEach(method => {
+            const methodCard = createPaymentMethodCard(method);
+            paymentMethodsContainer.insertBefore(methodCard, addButton);
+          });
+        } else {
+          const noMethodsMsg = document.createElement('p');
+          noMethodsMsg.textContent = 'No payment methods added yet. Add your first eco-friendly payment method!';
+          noMethodsMsg.style.color = '#666';
+          noMethodsMsg.style.textAlign = 'center';
+          noMethodsMsg.style.padding = '2rem';
+          paymentMethodsContainer.insertBefore(noMethodsMsg, addButton);
+        }
+      } catch (error) {
+        console.error('Error loading payment methods:', error);
+      }
+    }
+
+    // Create payment method card
+    function createPaymentMethodCard(method) {
+      const card = document.createElement('div');
+      card.className = `payment-method-card ${method.isDefault ? 'default' : ''}`;
+      
+      let icon = 'fas fa-credit-card';
+      let displayName = method.type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+      let details = '';
+
+      switch (method.type) {
+        case 'credit_card':
+        case 'debit_card':
+          icon = 'fas fa-credit-card';
+          details = `**** **** **** ${method.cardNumber}<br>${method.cardHolderName}`;
+          break;
+        case 'upi':
+          icon = 'fas fa-mobile-alt';
+          details = method.upiId;
+          break;
+        case 'paypal':
+          icon = 'fab fa-paypal';
+          details = method.email;
+          break;
+        case 'green_wallet':
+          icon = 'fas fa-leaf';
+          details = `Balance: ₹${method.greenWalletBalance || 0}`;
+          break;
+        case 'eco_credits':
+          icon = 'fas fa-coins';
+          details = `Credits: ${method.ecoCredits || 0}`;
+          break;
+      }
+
+      card.innerHTML = `
+        ${method.isDefault ? '<div class="default-badge">Default</div>' : ''}
+        <div class="payment-method-header">
+          <div class="payment-method-type">
+            <i class="${icon}"></i>
+            ${displayName}
+          </div>
+          <div class="payment-method-actions">
+            ${!method.isDefault ? `<button class="btn btn-small btn-outline" onclick="setDefaultPaymentMethod('${method._id}')">Set Default</button>` : ''}
+            <button class="btn btn-small btn-danger" onclick="deletePaymentMethod('${method._id}')">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+        <div class="payment-method-details">
+          <p>${details}</p>
+        </div>
+      `;
+
+      return card;
+    }
+
+    // Update eco stats
+    function updateEcoStats(paymentMethods) {
+      let totalEcoCredits = 0;
+      let greenWalletBalance = 0;
+
+      paymentMethods.forEach(method => {
+        if (method.type === 'eco_credits') {
+          totalEcoCredits += method.ecoCredits || 0;
+        }
+        if (method.type === 'green_wallet') {
+          greenWalletBalance += method.greenWalletBalance || 0;
+        }
+      });
+
+      const ecoCreditsEl = document.getElementById('total-eco-credits');
+      const greenWalletEl = document.getElementById('green-wallet-balance');
+      
+      if (ecoCreditsEl) ecoCreditsEl.textContent = totalEcoCredits;
+      if (greenWalletEl) greenWalletEl.textContent = `₹${greenWalletBalance.toFixed(2)}`;
+    }
+
+    // Load transaction history
+    async function loadTransactionHistory() {
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) return;
+
+        const response = await fetch('http://localhost:5000/api/rides/payment/transactions', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch transaction history');
+        }
+
+        const data = await response.json();
+        const transactionContainer = document.getElementById('transaction-history');
+        
+        if (!transactionContainer) return;
+
+        if (data.transactions && data.transactions.length > 0) {
+          transactionContainer.innerHTML = '';
+          
+          // Update total CO2 saved
+          const totalCO2 = data.transactions.reduce((sum, t) => sum + (t.carbonOffsetKg || 0), 0);
+          const co2SavedEl = document.getElementById('total-co2-saved');
+          if (co2SavedEl) co2SavedEl.textContent = `${totalCO2.toFixed(2)}kg`;
+
+          data.transactions.forEach(transaction => {
+            const transactionItem = createTransactionItem(transaction);
+            transactionContainer.appendChild(transactionItem);
+          });
+        } else {
+          transactionContainer.innerHTML = '<p>No transactions yet. Complete a ride to see your green impact!</p>';
+        }
+      } catch (error) {
+        console.error('Error loading transaction history:', error);
+      }
+    }
+
+    // Create transaction item
+    function createTransactionItem(transaction) {
+      const item = document.createElement('div');
+      item.className = 'transaction-item';
+      
+      const date = new Date(transaction.createdAt).toLocaleDateString();
+      const time = new Date(transaction.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+      item.innerHTML = `
+        <div class="transaction-details">
+          <h4>${transaction.description}</h4>
+          <p><i class="fas fa-calendar"></i> ${date} at ${time}</p>
+          <p><i class="fas fa-receipt"></i> Transaction ID: ${transaction.transactionId}</p>
+        </div>
+        <div class="transaction-amount">
+          <div class="amount">₹${transaction.amount.toFixed(2)}</div>
+          ${transaction.carbonOffsetKg ? `
+            <div class="eco-impact">
+              <i class="fas fa-leaf"></i> ${transaction.carbonOffsetKg.toFixed(2)}kg CO₂ saved
+            </div>
+          ` : ''}
+          ${transaction.greenPointsEarned ? `
+            <div class="eco-impact">
+              <i class="fas fa-coins"></i> +${transaction.greenPointsEarned} Green Points
+            </div>
+          ` : ''}
+        </div>
+      `;
+
+      return item;
+    }
+
+    // Add payment method
+    async function addPaymentMethod(formData) {
+      showLoading();
+      
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          alert('Please login to add payment method');
+          return;
+        }
+
+        const response = await fetch('http://localhost:5000/api/rides/payment/methods', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          alert('Payment method added successfully!');
+          document.getElementById('payment-modal').classList.remove('show');
+          document.getElementById('add-payment-form').reset();
+          await loadPaymentMethods();
+        } else {
+          alert(data.message || 'Failed to add payment method');
+        }
+      } catch (error) {
+        console.error('Error adding payment method:', error);
+        alert('Error adding payment method. Please try again.');
+      } finally {
+        hideLoading();
+      }
+    }
+
+    // Delete payment method
+    async function deletePaymentMethod(paymentMethodId) {
+      if (!confirm('Are you sure you want to delete this payment method?')) {
+        return;
+      }
+
+      showLoading();
+      
+      try {
+        const token = localStorage.getItem('authToken');
+        const response = await fetch(`http://localhost:5000/api/rides/payment/methods/${paymentMethodId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          alert('Payment method deleted successfully!');
+          await loadPaymentMethods();
+        } else {
+          alert(data.message || 'Failed to delete payment method');
+        }
+      } catch (error) {
+        console.error('Error deleting payment method:', error);
+        alert('Error deleting payment method. Please try again.');
+      } finally {
+        hideLoading();
+      }
+    }
+
+    // Load settings
+    function loadSettings() {
+      // Load saved settings from localStorage
+      const settings = JSON.parse(localStorage.getItem('userSettings')) || getDefaultSettings();
+      
+      // Apply settings to UI
+      document.getElementById('pref-electric').checked = settings.vehiclePreferences.electric;
+      document.getElementById('pref-hybrid').checked = settings.vehiclePreferences.hybrid;
+      document.getElementById('pref-bike').checked = settings.vehiclePreferences.bike;
+      document.getElementById('pref-public').checked = settings.vehiclePreferences.public;
+      
+      document.getElementById('notif-eco-rides').checked = settings.notifications.ecoRides;
+      document.getElementById('notif-co2-report').checked = settings.notifications.co2Report;
+      document.getElementById('notif-achievements').checked = settings.notifications.achievements;
+      document.getElementById('notif-challenges').checked = settings.notifications.challenges;
+      
+      document.getElementById('max-distance').value = settings.ridePreferences.maxDistance;
+      document.getElementById('preferred-time').value = settings.ridePreferences.preferredTime;
+      
+      document.getElementById('profile-visibility').value = settings.privacy.profileVisibility;
+      document.getElementById('location-sharing').checked = settings.privacy.locationSharing;      document.getElementById('distance-unit').value = settings.appPreferences.distanceUnit;
+      document.getElementById('currency').value = settings.appPreferences.currency;
+      
+      // Always apply the theme from settings
+      applyTheme(settings.appPreferences.theme);
+      document.querySelectorAll('.theme-option').forEach(option => {
+        option.classList.remove('selected');
+        if (option.dataset.theme === settings.appPreferences.theme) {
+          option.classList.add('selected');
+        }
+      });
+    }
+
+    // Get default settings
+    function getDefaultSettings() {
+      return {
+        vehiclePreferences: {
+          electric: true,
+          hybrid: true,
+          bike: false,
+          public: false
+        },
+        notifications: {
+          ecoRides: true,
+          co2Report: true,
+          achievements: true,
+          challenges: false
+        },
+        ridePreferences: {
+          maxDistance: '25',
+          preferredTime: 'evening'
+        },
+        privacy: {
+          profileVisibility: 'eco-community',
+          locationSharing: true
+        },
+        appPreferences: {
+          theme: 'green',
+          distanceUnit: 'km',
+          currency: 'INR'
+        }
+      };
+    }
+
+    // Save settings
+    function saveSettings() {
+      const settings = {
+        vehiclePreferences: {
+          electric: document.getElementById('pref-electric').checked,
+          hybrid: document.getElementById('pref-hybrid').checked,
+          bike: document.getElementById('pref-bike').checked,
+          public: document.getElementById('pref-public').checked
+        },
+        notifications: {
+          ecoRides: document.getElementById('notif-eco-rides').checked,
+          co2Report: document.getElementById('notif-co2-report').checked,
+          achievements: document.getElementById('notif-achievements').checked,
+          challenges: document.getElementById('notif-challenges').checked
+        },
+        ridePreferences: {
+          maxDistance: document.getElementById('max-distance').value,
+          preferredTime: document.getElementById('preferred-time').value
+        },
+        privacy: {
+          profileVisibility: document.getElementById('profile-visibility').value,
+          locationSharing: document.getElementById('location-sharing').checked
+        },
+        appPreferences: {
+          theme: document.querySelector('.theme-option.selected')?.dataset.theme || 'green',
+          distanceUnit: document.getElementById('distance-unit').value,
+          currency: document.getElementById('currency').value
+        }
+      };      localStorage.setItem('userSettings', JSON.stringify(settings));
+      
+      // Always apply the selected theme immediately
+      applyTheme(settings.appPreferences.theme);
+      
+      alert('Settings saved successfully! Your preferences will enhance your eco-friendly commuting experience.');
+    }    // Apply theme
+    function applyTheme(theme) {
+      const root = document.documentElement;
+      
+      // Remove all theme classes first
+      document.body.classList.remove('dark-mode', 'blue-mode');
+      
+      if (theme === 'blue') {
+        document.body.classList.add('blue-mode');
+        root.style.setProperty('--primary', '#3498db');
+        root.style.setProperty('--primary-light', '#5dade2');
+        root.style.setProperty('--primary-dark', '#2980b9');
+        root.style.setProperty('--accent', '#2980b9');
+        root.style.setProperty('--success', '#1abc9c');
+        root.style.setProperty('--light', '#ffffff');
+        root.style.setProperty('--text-light', '#ffffff');
+        root.style.setProperty('--text-dark', '#2d3748');
+        document.body.style.backgroundColor = '#f7fafc';
+        document.body.style.color = '#2d3748';
+      } else if (theme === 'dark') {
+        document.body.classList.add('dark-mode');
+        root.style.setProperty('--primary', '#4ecdc4');
+        root.style.setProperty('--primary-light', '#6dd5db');
+        root.style.setProperty('--primary-dark', '#45b7b8');
+        root.style.setProperty('--accent', '#45b7b8');
+        root.style.setProperty('--success', '#00d2d3');
+        root.style.setProperty('--light', '#2c3e50');
+        root.style.setProperty('--text-light', '#2c3e50');
+        root.style.setProperty('--text-dark', '#ecf0f1');
+        document.body.style.backgroundColor = '#1a1a1a';
+        document.body.style.color = '#ecf0f1';
+        
+      } else {
+        // Reset to original green theme - remove all overrides
+        root.style.removeProperty('--primary');
+        root.style.removeProperty('--primary-light');
+        root.style.removeProperty('--primary-dark');
+        root.style.removeProperty('--accent');
+        root.style.removeProperty('--success');
+        root.style.removeProperty('--light');
+        root.style.removeProperty('--text-light');
+        root.style.removeProperty('--text-dark');
+        document.body.style.removeProperty('background-color');
+        document.body.style.removeProperty('color');
+      }
+    }// Reset settings to default
+    function resetSettings() {
+      if (confirm('Are you sure you want to reset all settings to default? This cannot be undone.')) {
+        localStorage.removeItem('userSettings');
+        loadSettings();
+        // Apply the default green theme
+        applyTheme('green');
+        alert('Settings have been reset to default values.');
+      }
+    }
+
+    // Clear cache
+    function clearCache() {
+      if (confirm('This will clear app cache and may improve performance. Continue?')) {
+        // Simulate cache clearing
+        document.getElementById('cache-size').textContent = '0.5 MB';
+        alert('Cache cleared successfully!');
+      }
+    }
+
+    // Download user data
+    function downloadUserData() {
+      const userData = {
+        profile: JSON.parse(localStorage.getItem('currentUser')),
+        settings: JSON.parse(localStorage.getItem('userSettings')),
+        exportDate: new Date().toISOString()
+      };
+      
+      const dataStr = JSON.stringify(userData, null, 2);
+      const dataBlob = new Blob([dataStr], {type: 'application/json'});
+      
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(dataBlob);
+      link.download = 'greencommute-data.json';
+      link.click();
+      
+      alert('Your data has been downloaded successfully!');
+    }
+
+    // Delete payment method
+    async function deletePaymentMethod(paymentMethodId) {
+      if (!confirm('Are you sure you want to delete this payment method?')) {
+        return;
+      }
+
+      showLoading();
+      
+      try {
+        const token = localStorage.getItem('authToken');
+        const response = await fetch(`http://localhost:5000/api/rides/payment/methods/${paymentMethodId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          alert('Payment method deleted successfully!');
+          await loadPaymentMethods();
+        } else {
+          alert(data.message || 'Failed to delete payment method');
+        }
+      } catch (error) {
+        console.error('Error deleting payment method:', error);
+        alert('Error deleting payment method. Please try again.');
+      } finally {
+        hideLoading();
+      }
+    }
+
+    // Complete a ride
+    async function completeRide(rideId) {
+      showLoading();
+
+      try {
+        const token = localStorage.getItem('authToken');
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        
+        if (!token || !currentUser) {
+          alert('Please login to complete a ride');
+          hideLoading();
+          return;
+        }
+
+        // Prompt for ride details
+        const distanceKm = prompt('Enter the distance traveled (in km):');
+        if (!distanceKm || isNaN(distanceKm)) {
+          alert('Please enter a valid distance');
+          hideLoading();
+          return;
+        }
+
+        const riderRating = prompt('Rate the passengers (1-5 stars):');
+        if (!riderRating || isNaN(riderRating) || riderRating < 1 || riderRating > 5) {
+          alert('Please enter a valid rating between 1-5');
+          hideLoading();
+          return;
+        }
+
+        const response = await fetch('http://localhost:5000/api/rides/complete', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            rideId: rideId,
+            riderId: currentUser._id, // For simplicity, using current user as rider
+            driverId: currentUser._id,
+            distanceKm: parseFloat(distanceKm),
+            riderRating: parseInt(riderRating),
+            driverRating: 5 // Default driver rating
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert('Ride completed successfully! CO₂ saved and green points earned.');
+          // Refresh the ride history
+          await loadRideHistory();
+        } else {
+          alert(data.message || 'Failed to complete ride');
+        }
+      } catch (error) {
+        console.error('Error completing ride:', error);
+        alert('Error completing ride. Please try again.');
+      } finally {
+        hideLoading();
+      }
+    }
+
+    let bookedRides = []; // Array to store booked rides (deprecated - now using backend)
+
+    // Navigation function
+    function navigateTo(pageName) {
+      // Update active navigation item
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
+
+      const navItem = document.querySelector(`.nav-item[data-page="${pageName}"]`);
+      if (navItem) navItem.classList.add('active');
+
+      // Update page title
+      document.getElementById('page-title').textContent = pageName
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+
+      // Hide all pages
+      document.querySelectorAll('.page-content').forEach(page => {
+        page.classList.remove('active');
+        page.style.display = 'none';
+      });
+
+      // Show selected page
+      const selectedPage = document.getElementById(`${pageName}-page`);
+      if (selectedPage) {
+        selectedPage.classList.add('active');
+        selectedPage.style.display = 'block';
+      }      // Load page-specific data
+      if (pageName === 'nearby-rides') {
+        loadNearbyRides();
+      } else if (pageName === 'ride-history') {
+        loadRideHistory();      } else if (pageName === 'payment') {
+        loadPaymentMethods();
+        loadTransactionHistory();
+      } else if (pageName === 'settings') {
+        loadSettings();
+      } else if (pageName === 'home') {
+        loadDashboardData();
+        // Only reinitialize map if it doesn't exist
+        if (!map) {
+          initMap();
+        }
+      }
+    }    // Handle login form submission
+    async function handleLogin(e) {
+      e.preventDefault();
+
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+
+      showLoading();
+
+      try {
+        const response = await fetch('http://localhost:5000/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.token) {
+          // Store the token and user details in localStorage
+          localStorage.setItem('authToken', data.token);
+          localStorage.setItem('currentUser', JSON.stringify(data.user));
+
+          alert('Login successful!');
+          checkAuth(); // Recheck authentication and load the app
+        } else {
+          alert(data.message || 'Login failed');
+        }
+      } catch (error) {
+        console.error('Error logging in:', error);
+        alert('Error logging in. Please check your connection and try again.');
+      } finally {
+        hideLoading();
+      }
+    }    // Handle register form submission
+    async function handleRegister(e) {
+      e.preventDefault();
+      showLoading();
+
+      const form = document.getElementById('register-form');
+      const formData = new FormData(form);
+      const registerData = {
+        name: formData.get('name'),
+        email: formData.get('email'),
+        password: formData.get('password'),
+        role: formData.get('role')
+      };
+
+      try {
+        const response = await fetch('http://localhost:5000/api/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(registerData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.token) {
+          // Store the token and user details in localStorage
+          localStorage.setItem('authToken', data.token);
+          localStorage.setItem('currentUser', JSON.stringify(data.user));
+
+          alert('Registration successful!');
+          checkAuth(); // Recheck authentication and load the app
+        } else {
+          alert(data.message || 'Registration failed');
+        }
+      } catch (error) {
+        console.error('Error registering user:', error);
+        alert('Error registering user. Please check your connection and try again.');
+      } finally {
+        hideLoading();
+      }
+    }
+
+    // Handle logout
+    function handleLogout() {
+      showLoading();
+      
+      // Simulate API call
+      setTimeout(() => {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('currentUser');
+        
+        hideLoading();
+        checkAuth();
+      }, 1000);
+    }
+
+    // Document ready function
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize application
+      checkAuth();
+      
+      // Setup navigation
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+          e.preventDefault();
+          const page = this.getAttribute('data-page');
+          navigateTo(page);
+        });
+      });
+      
+      // Login form submission
+      document.getElementById('login-form').addEventListener('submit', handleLogin);
+      
+      // Register form submission
+      document.getElementById('register-form').addEventListener('submit', handleRegister);
+      
+      // Logout button
+      document.getElementById('logout-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+        handleLogout();
+      });
+      
+      // Profile dropdown toggle
+      document.getElementById('user-profile').addEventListener('click', function() {
+        document.getElementById('profile-dropdown').classList.toggle('show');
+      });
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function(e) {
+        const dropdown = document.getElementById('profile-dropdown');
+        const profile = document.getElementById('user-profile');
+        
+        if (!profile.contains(e.target) && dropdown.classList.contains('show')) {
+          dropdown.classList.remove('show');
+        }
+      });
+      
+      // Switch between login and register
+      document.getElementById('switch-to-register').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('login-page').style.display = 'none';
+        document.getElementById('register-page').style.display = 'flex';
+      });
+      
+      document.getElementById('switch-to-login').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('register-page').style.display = 'none';
+        document.getElementById('login-page').style.display = 'flex';
+      });
+      
+      // Profile page navigation
+      document.querySelectorAll('.dropdown-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          if (this.id === 'logout-btn') return; // Logout is handled separately
+          
+          document.getElementById('profile-dropdown').classList.remove('show');
+          const page = this.getAttribute('data-page');
+          navigateTo(page);
+        });
+      });
+      
+      // Book ride form
+      const bookRideForm = document.getElementById('book-ride-form');
+      if (bookRideForm) {
+        bookRideForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          showLoading();
+          
+          // Simulate API call
+          setTimeout(() => {
+            hideLoading();
+            navigateTo('nearby-rides');
+          }, 1500);
+        });
+      }
+      
+      // Quick action buttons
+      const findRidesBtn = document.getElementById('find-rides-btn');
+      if (findRidesBtn) {
+        findRidesBtn.addEventListener('click', function() {
+          navigateTo('nearby-rides');
+        });
+      }
+      
+      const offerRideBtn = document.getElementById('offer-ride-btn');
+      if (offerRideBtn) {
+        offerRideBtn.addEventListener('click', function() {
+          // For demo purposes, just navigate to book ride
+          navigateTo('book-ride');
+        });
+      }
+        // Search rides form
+      const searchRidesForm = document.getElementById('search-rides-form');
+      if (searchRidesForm) {
+        searchRidesForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          const searchParams = {
+            origin: document.getElementById('search-origin').value,
+            destination: document.getElementById('search-destination').value,
+            vehicleType: document.getElementById('search-vehicle-type').value
+          };
+          
+          loadNearbyRides(searchParams);
+        });
+      }
+
+      // Show all rides button
+      const showAllRidesBtn = document.getElementById('show-all-rides-btn');
+      if (showAllRidesBtn) {
+        showAllRidesBtn.addEventListener('click', function() {
+          // Clear search form
+          document.getElementById('search-origin').value = '';
+          document.getElementById('search-destination').value = '';
+          document.getElementById('search-vehicle-type').value = '';
+          
+          // Load all rides
+          loadNearbyRides();
+        });
+      }
+
+      // Profile form
+      const profileForm = document.getElementById('profile-form');
+      if (profileForm) {
+        profileForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          showLoading();
+          
+          // Simulate API call
+          setTimeout(() => {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            currentUser.name = document.getElementById('profile-name').value;
+            currentUser.role = document.getElementById('profile-role').value;
+            
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            updateUserProfile(currentUser);
+            
+            hideLoading();
+            alert('Profile updated successfully!');
+          }, 1500);
+        });
+      }      // Payment modal functionality
+      const addPaymentBtn = document.getElementById('add-payment-btn');
+      const paymentModal = document.getElementById('payment-modal');
+      const closePaymentModal = document.getElementById('close-payment-modal');
+      const addPaymentForm = document.getElementById('add-payment-form');
+
+      if (addPaymentBtn) {
+        addPaymentBtn.addEventListener('click', function() {
+          paymentModal.classList.add('show');
+          // Populate years for card expiry
+          const yearSelect = document.querySelector('select[name="expiryYear"]');
+          if (yearSelect && yearSelect.children.length === 1) {
+            const currentYear = new Date().getFullYear();
+            for (let i = 0; i < 15; i++) {
+              const option = document.createElement('option');
+              option.value = currentYear + i;
+              option.textContent = currentYear + i;
+              yearSelect.appendChild(option);
+            }
+          }
+        });
+      }
+
+      if (closePaymentModal) {
+        closePaymentModal.addEventListener('click', function() {
+          paymentModal.classList.remove('show');
+        });
+      }
+
+      // Close modal when clicking outside
+      if (paymentModal) {
+        paymentModal.addEventListener('click', function(e) {
+          if (e.target === paymentModal) {
+            paymentModal.classList.remove('show');
+          }
+        });
+      }
+
+      // Payment type selection
+      document.querySelectorAll('.payment-type-option').forEach(option => {
+        option.addEventListener('click', function() {
+          // Remove selected class from all options
+          document.querySelectorAll('.payment-type-option').forEach(opt => {
+            opt.classList.remove('selected');
+          });
+          
+          // Add selected class to clicked option
+          this.classList.add('selected');
+          
+          // Hide all payment details
+          document.querySelectorAll('.payment-details').forEach(detail => {
+            detail.style.display = 'none';
+          });
+          
+          // Show relevant payment details
+          const type = this.getAttribute('data-type');
+          if (type === 'credit_card' || type === 'debit_card') {
+            document.getElementById('card-details').style.display = 'block';
+          } else if (type === 'upi') {
+            document.getElementById('upi-details').style.display = 'block';
+          } else if (type === 'paypal') {
+            document.getElementById('paypal-details').style.display = 'block';
+          } else if (type === 'green_wallet') {
+            document.getElementById('green-wallet-details').style.display = 'block';
+          } else if (type === 'eco_credits') {
+            document.getElementById('eco-credits-details').style.display = 'block';
+          }
+        });
+      });
+
+      // Add payment form submission
+      if (addPaymentForm) {
+        addPaymentForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          const selectedType = document.querySelector('.payment-type-option.selected');
+          if (!selectedType) {
+            alert('Please select a payment type');
+            return;
+          }
+          
+          const formData = new FormData(this);
+          const paymentData = {
+            type: selectedType.getAttribute('data-type'),
+            isDefault: formData.get('isDefault') === 'on'
+          };
+          
+          // Add type-specific data
+          if (paymentData.type === 'credit_card' || paymentData.type === 'debit_card') {
+            paymentData.cardNumber = formData.get('cardNumber').replace(/\s/g, '');
+            paymentData.cardHolderName = formData.get('cardHolderName');
+            paymentData.expiryMonth = parseInt(formData.get('expiryMonth'));
+            paymentData.expiryYear = parseInt(formData.get('expiryYear'));
+          } else if (paymentData.type === 'upi') {
+            paymentData.upiId = formData.get('upiId');
+          } else if (paymentData.type === 'paypal') {
+            paymentData.email = formData.get('email');
+          }
+          
+          addPaymentMethod(paymentData);
+        });
+      }
+
+      // Card number formatting
+      const cardNumberInput = document.querySelector('input[name="cardNumber"]');
+      if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', function(e) {
+          let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+          let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+          if (formattedValue.length > 19) formattedValue = formattedValue.substr(0, 19);
+          e.target.value = formattedValue;
+        });      }
+
+      // Settings functionality
+      const saveSettingsBtn = document.getElementById('save-settings-btn');
+      const resetSettingsBtn = document.getElementById('reset-settings-btn');
+      const clearCacheBtn = document.getElementById('clear-cache-btn');
+      const downloadDataBtn = document.getElementById('download-data-btn');
+      const changePasswordBtn = document.getElementById('change-password-btn');
+      const enable2FABtn = document.getElementById('enable-2fa-btn');
+
+      if (saveSettingsBtn) {
+        saveSettingsBtn.addEventListener('click', saveSettings);
+      }
+
+      if (resetSettingsBtn) {
+        resetSettingsBtn.addEventListener('click', resetSettings);
+      }
+
+      if (clearCacheBtn) {
+        clearCacheBtn.addEventListener('click', clearCache);
+      }
+
+      if (downloadDataBtn) {
+        downloadDataBtn.addEventListener('click', downloadUserData);
+      }
+
+      if (changePasswordBtn) {
+        changePasswordBtn.addEventListener('click', function() {
+          alert('Password change functionality will be implemented with backend integration.');
+        });
+      }
+
+      if (enable2FABtn) {
+        enable2FABtn.addEventListener('click', function() {
+          alert('Two-factor authentication setup will be available soon!');
+        });
+      }
+
+      // Theme selection
+      document.querySelectorAll('.theme-option').forEach(option => {
+        option.addEventListener('click', function() {
+          document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('selected'));
+          this.classList.add('selected');
+          
+          const theme = this.dataset.theme;
+          applyTheme(theme);
+        });
+      });
+
+      // Goal adjustment buttons
+      document.querySelectorAll('.goal-card .btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          const goalType = this.closest('.goal-card').querySelector('h4').textContent;
+          const newGoal = prompt(`Enter your new ${goalType.toLowerCase()} goal:`);
+          if (newGoal && !isNaN(newGoal)) {
+            alert(`${goalType} goal updated to ${newGoal}!`);
+            // Update the progress display
+            const progressText = this.closest('.goal-card').querySelector('.progress-text');
+            const currentValue = progressText.textContent.split('/')[0];
+            progressText.textContent = `${currentValue}/${newGoal} ${goalType.includes('CO₂') ? 'kg CO₂' : goalType.includes('Points') ? 'points' : 'rides'}`;
+            
+            // Update progress bar
+            const progressFill = this.closest('.goal-card').querySelector('.progress-fill');
+            const percentage = (parseInt(currentValue) / parseInt(newGoal)) * 100;
+            progressFill.style.width = `${Math.min(percentage, 100)}%`;
+          }
+        });
+      });      // Load settings on page load
+      setTimeout(() => {
+        // Load and apply all settings including theme
+        loadSettings();
+      }, 100);
+
+      const createRideForm = document.getElementById('create-ride-form');
+      if (createRideForm) {
+        createRideForm.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          showLoading();
+      
+          try {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+              alert('Please login to create a ride');
+              hideLoading();
+              return;
+            }
+
+            const formData = new FormData(this);
+            const rideData = {
+              origin: formData.get('origin'),
+              destination: formData.get('destination'),
+              departureTime: new Date(`${formData.get('date')}T${formData.get('time')}`).toISOString(),
+              seatsAvailable: parseInt(formData.get('seats')),
+              vehicleType: formData.get('vehicleType') || 'Car'
+            };
+
+            const response = await fetch('http://localhost:5000/api/rides/create', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify(rideData)
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              alert('Ride created successfully!');
+              this.reset(); // Reset the form
+              navigateTo('nearby-rides');
+            } else {
+              alert(data.message || 'Failed to create ride');
+            }
+          } catch (error) {
+            console.error('Error creating ride:', error);
+            alert('Error creating ride. Please try again.');
+          } finally {
+            hideLoading();
+          }
+        });      }
+    });
+
+    // Safety Page Functions
+    function showAddContactModal() {
+      document.getElementById('add-contact-modal').style.display = 'flex';
+    }
+
+    function hideAddContactModal() {
+      document.getElementById('add-contact-modal').style.display = 'none';
+      document.getElementById('add-contact-form').reset();
+    }
+
+    function showIncidentReportModal() {
+      document.getElementById('incident-report-modal').style.display = 'flex';
+    }
+
+    function hideIncidentReportModal() {
+      document.getElementById('incident-report-modal').style.display = 'none';
+      document.getElementById('incident-report-form').reset();
+    }    // Emergency contacts management
+    let emergencyContacts = JSON.parse(localStorage.getItem('emergencyContacts') || '[]');
+
+    async function loadEmergencyContacts() {
+      const contactsContainer = document.getElementById('emergency-contacts');
+      if (!contactsContainer) return;
+
+      try {
+        // Load contacts from backend
+        const token = localStorage.getItem('authToken');
+        if (token) {
+          const response = await fetch('http://localhost:5000/api/rides/safety/settings', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          if (response.ok) {
+            const safetySettings = await response.json();
+            emergencyContacts = safetySettings.emergencyContacts || [];
+          }
+        }
+      } catch (error) {
+        console.error('Error loading emergency contacts:', error);
+        // Fallback to localStorage
+        emergencyContacts = JSON.parse(localStorage.getItem('emergencyContacts') || '[]');
+      }
+
+      if (emergencyContacts.length === 0) {
+        contactsContainer.innerHTML = `
+          <div class="emergency-contact-item">
+            <div class="contact-info">
+              <div class="contact-name">No emergency contacts added</div>
+              <div class="contact-phone">Add your emergency contacts for quick access during rides</div>
+            </div>
+            <button class="btn btn-primary btn-small" onclick="showAddContactModal()">
+              <i class="fas fa-plus"></i> Add Contact
+            </button>
+          </div>
+        `;
+      } else {
+        contactsContainer.innerHTML = emergencyContacts.map((contact, index) => `
+          <div class="emergency-contact-item">
+            <div class="contact-info">
+              <div class="contact-name">${contact.name}</div>
+              <div class="contact-phone">${contact.phone} • ${contact.relationship}</div>
+            </div>
+            <div>
+              <button class="btn btn-outline btn-small" onclick="callEmergencyContact('${contact.phone}')">
+                <i class="fas fa-phone"></i> Call
+              </button>
+              <button class="btn btn-danger btn-small" onclick="removeEmergencyContact('${contact._id || index}')" style="margin-left: 0.5rem;">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        `).join('') + `
+          <div class="emergency-contact-item" style="border: 2px dashed var(--accent);">
+            <div class="contact-info">
+              <div class="contact-name">Add another contact</div>
+              <div class="contact-phone">You can add up to 5 emergency contacts</div>
+            </div>
+            <button class="btn btn-primary btn-small" onclick="showAddContactModal()" ${emergencyContacts.length >= 5 ? 'disabled' : ''}>
+              <i class="fas fa-plus"></i> Add Contact
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    function callEmergencyContact(phone) {
+      if (confirm(`Call ${phone}?`)) {
+        window.location.href = `tel:${phone}`;
+      }
+    }    async function removeEmergencyContact(contactId) {
+      if (!confirm('Remove this emergency contact?')) return;
+
+      try {
+        const token = localStorage.getItem('authToken');
+        if (token && contactId && typeof contactId === 'string' && contactId.length === 24) {
+          // Remove from backend if contactId is a valid MongoDB ObjectId
+          const response = await fetch(`http://localhost:5000/api/rides/safety/emergency-contacts/${contactId}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          if (response.ok) {
+            loadEmergencyContacts();
+            return;
+          }
+        }
+
+        // Fallback to localStorage for local contacts
+        const index = parseInt(contactId);
+        if (!isNaN(index)) {
+          emergencyContacts.splice(index, 1);
+          localStorage.setItem('emergencyContacts', JSON.stringify(emergencyContacts));
+          loadEmergencyContacts();
+        }
+      } catch (error) {
+        console.error('Error removing emergency contact:', error);
+        alert('Failed to remove emergency contact. Please try again.');
+      }
+    }
+
+    // Add contact form handler
+    document.addEventListener('DOMContentLoaded', function() {      const addContactForm = document.getElementById('add-contact-form');
+      if (addContactForm) {
+        addContactForm.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          
+          if (emergencyContacts.length >= 5) {
+            alert('You can only have up to 5 emergency contacts.');
+            return;
+          }
+
+          const name = document.getElementById('contact-name').value.trim();
+          const phone = document.getElementById('contact-phone').value.trim();
+          const relationship = document.getElementById('contact-relationship').value;
+
+          if (!name || !phone || !relationship) {
+            alert('Please fill in all fields.');
+            return;
+          }
+
+          try {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+              // Try to add via backend
+              const response = await fetch('http://localhost:5000/api/rides/safety/emergency-contacts', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ name, phone, relationship })
+              });
+
+              if (response.ok) {
+                hideAddContactModal();
+                loadEmergencyContacts();
+                alert('Emergency contact added successfully!');
+                return;
+              } else {
+                const error = await response.json();
+                alert(error.error || 'Failed to add emergency contact');
+                return;
+              }
+            }
+
+            // Fallback to localStorage
+            const exists = emergencyContacts.some(contact => 
+              contact.phone === phone || contact.name.toLowerCase() === name.toLowerCase()
+            );
+
+            if (exists) {
+              alert('This contact already exists.');
+              return;
+            }
+
+            const newContact = { name, phone, relationship };
+            emergencyContacts.push(newContact);
+            localStorage.setItem('emergencyContacts', JSON.stringify(emergencyContacts));
+            
+            hideAddContactModal();
+            loadEmergencyContacts();
+            alert('Emergency contact added successfully!');
+          } catch (error) {
+            console.error('Error adding emergency contact:', error);
+            alert('Failed to add emergency contact. Please try again.');
+          }
+        });
+      }      // Incident report form handler
+      const incidentForm = document.getElementById('incident-report-form');
+      if (incidentForm) {
+        incidentForm.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          
+          const incidentData = {
+            type: document.getElementById('incident-type').value,
+            rideId: document.getElementById('incident-ride-id').value,
+            description: document.getElementById('incident-description').value,
+            severity: document.getElementById('incident-severity').value
+          };
+
+          try {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+              // Submit to backend
+              const response = await fetch('http://localhost:5000/api/rides/safety/incident-reports', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(incidentData)
+              });
+
+              if (response.ok) {
+                hideIncidentReportModal();
+                alert('Incident report submitted successfully. Our safety team will review it shortly.');
+                
+                // If it's an emergency, show additional options
+                if (incidentData.severity === 'emergency') {
+                  if (confirm('This is an emergency. Would you like to call emergency services?')) {
+                    window.location.href = 'tel:911';
+                  }
+                }
+                return;
+              } else {
+                const error = await response.json();
+                alert(error.error || 'Failed to submit incident report');
+                return;
+              }
+            }
+
+            // Fallback to localStorage
+            const incidents = JSON.parse(localStorage.getItem('incidents') || '[]');
+            incidents.push({
+              ...incidentData,
+              timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('incidents', JSON.stringify(incidents));
+            
+            hideIncidentReportModal();
+            alert('Incident report submitted successfully. Our safety team will review it shortly.');
+            
+            // If it's an emergency, show additional options
+            if (incidentData.severity === 'emergency') {
+              if (confirm('This is an emergency. Would you like to call emergency services?')) {
+                window.location.href = 'tel:911';
+              }
+            }
+          } catch (error) {
+            console.error('Error submitting incident report:', error);
+            alert('Failed to submit incident report. Please try again.');
+          }
+        });
+      }      // Load emergency contacts when safety page is accessed
+      const safetyNav = document.querySelector('.nav-item[data-page="safety"]');
+      if (safetyNav) {
+        safetyNav.addEventListener('click', function() {
+          setTimeout(() => {
+            loadEmergencyContacts();
+            loadSafetyStats();
+          }, 100);
+        });
+      }
+
+      // Initialize emergency contacts if on safety page
+      loadEmergencyContacts();
+    });
+
+    // Load safety statistics
+    async function loadSafetyStats() {
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) return;
+
+        const response = await fetch('http://localhost:5000/api/rides/safety/stats', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const stats = await response.json();
+          updateSafetyScoreDisplay(stats);
+        }
+      } catch (error) {
+        console.error('Error loading safety stats:', error);
+      }
+    }    function updateSafetyScoreDisplay(stats) {
+      // Update safety score circle
+      const scoreNumber = document.getElementById('safety-score-display');
+      if (scoreNumber) {
+        scoreNumber.textContent = stats.safetyScore.toFixed(1);
+      }
+
+      // Update safety metrics
+      const totalRidesMetric = document.getElementById('total-rides-metric');
+      const safetyReportsMetric = document.getElementById('safety-reports-metric');
+      const positiveFeedbackMetric = document.getElementById('positive-feedback-metric');
+      
+      if (totalRidesMetric) totalRidesMetric.textContent = stats.totalRides;
+      if (safetyReportsMetric) safetyReportsMetric.textContent = stats.safetyReports;
+      if (positiveFeedbackMetric) positiveFeedbackMetric.textContent = `${stats.positiveFeedbackRate}%`;
+
+      // Update score description
+      const scoreTitle = document.getElementById('safety-score-title');
+      if (scoreTitle) {
+        if (stats.safetyScore >= 4.5) {
+          scoreTitle.textContent = 'Excellent Safety Record';
+        } else if (stats.safetyScore >= 4.0) {
+          scoreTitle.textContent = 'Good Safety Record';
+        } else if (stats.safetyScore >= 3.0) {
+          scoreTitle.textContent = 'Fair Safety Record';
+        } else {
+          scoreTitle.textContent = 'Needs Improvement';
+        }
+      }
+    }
+
+    // Safety feature toggles
+    function initializeSafetyToggles() {
+      const liveTrackingToggle = document.getElementById('live-tracking');
+      const safetyAlertsToggle = document.getElementById('safety-alerts');
+
+      if (liveTrackingToggle) {
+        liveTrackingToggle.addEventListener('change', function() {
+          const enabled = this.checked;
+          localStorage.setItem('liveTracking', enabled);
+          
+          if (enabled) {
+            // Request location permission
+            if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition(
+                function(position) {
+                  console.log('Live tracking enabled');
+                },
+                function(error) {
+                  alert('Location access is required for live tracking.');
+                  liveTrackingToggle.checked = false;
+                  localStorage.setItem('liveTracking', false);
+                }
+              );
+            }
+          }
+        });
+
+        // Load saved setting
+        const savedTracking = localStorage.getItem('liveTracking');
+        if (savedTracking !== null) {
+          liveTrackingToggle.checked = savedTracking === 'true';
+        }
+      }
+
+      if (safetyAlertsToggle) {
+        safetyAlertsToggle.addEventListener('change', function() {
+          localStorage.setItem('safetyAlerts', this.checked);
+        });
+
+        // Load saved setting
+        const savedAlerts = localStorage.getItem('safetyAlerts');
+        if (savedAlerts !== null) {
+          safetyAlertsToggle.checked = savedAlerts === 'true';
+        }
+      }
+    }
+
+    // Initialize safety toggles when DOM is loaded
+    document.addEventListener('DOMContentLoaded', initializeSafetyToggles);
+
+    function createRide(ride) {
+      // This function is deprecated - ride creation now handled by backend API
+      console.log('createRide function is deprecated');
+    }
+  </script>
+</body>
+</html>
