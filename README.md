@@ -143,9 +143,9 @@ npm install
 ### 3. Environment Configuration
 Create a `.env` file in the server directory:
 ```env
-MONGO_URI=mongodb://localhost:27017/greencommute
+MONGO_URI=mongodb://localhost:27017/database_name
 # OR for MongoDB Atlas:
-# MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/greencommute
+# MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/database_name
 
 JWT_SECRET=your_super_secret_jwt_key_here
 PORT=5000
