@@ -22,8 +22,19 @@ const io = new Server(server, {
   }
 });
 
-// Security headers
-app.use(helmet());
+// Security headers with CSP configured for frontend dependencies
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com", "https://cdnjs.cloudflare.com", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
+      imgSrc: ["'self'", "data:", "https:", "blob:"],
+      connectSrc: ["'self'", "wss:", "ws:"],
+    },
+  },
+}));
 
 // Rate limiting: max 20 auth requests per 15 minutes per IP
 const authLimiter = rateLimit({
