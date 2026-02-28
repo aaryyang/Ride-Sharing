@@ -5,6 +5,8 @@ const { Server } = require('socket.io');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 // Import routes
 const rideRoutes = require('./routes/ride');
@@ -20,9 +22,28 @@ const io = new Server(server, {
   }
 });
 
+// Security headers
+app.use(helmet());
+
+// Rate limiting: max 20 auth requests per 15 minutes per IP
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: { message: 'Too many requests, please try again later.' }
+});
+
+// General API rate limit: 100 requests per 15 minutes
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: { message: 'Too many requests, please try again later.' }
+});
+
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use('/api/auth', authLimiter);
+app.use('/api', apiLimiter);
 
 // Serve static files from the 'public' directory
 app.use(express.static('public'));

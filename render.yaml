@@ -1,0 +1,16 @@
+# render.yaml - Render.com deployment configuration
+services:
+  - type: web
+    name: greencommute-api
+    env: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false   # Set this manually in Render dashboard
+      - key: JWT_SECRET
+        sync: false   # Set this manually in Render dashboard
+      - key: PORT
+        value: 10000

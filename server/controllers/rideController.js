@@ -40,31 +40,32 @@ exports.searchRides = async (req, res) => {
 
 exports.joinRide = async (req, res) => {
   try {
-    const rideId = req.params.rideId;
+    const { rideId } = req.params;
     const userId = req.user._id;
 
-    const ride = await Ride.findById(rideId);
-    if (!ride) return res.status(404).json({ message: 'Ride not found' });
+    // ✅ THE ATOMIC FIX: 
+    // We only find the ride IF seats > 0 AND the user is NOT already a passenger
+    const ride = await Ride.findOneAndUpdate(
+      { 
+        _id: rideId, 
+        seatsAvailable: { $gt: 0 },         // Parity check: must have seats
+        passengers: { $ne: userId }         // Security check: user not already inside
+      },
+      { 
+        $inc: { seatsAvailable: -1 },       // Subtract 1 seat atomically
+        $push: { passengers: userId }       // Add user to array atomically
+      },
+      { new: true } // Return the updated document
+    );
 
-    if (ride.seatsAvailable <= 0) {
-      return res.status(400).json({ message: 'No seats available' });
+    if (!ride) {
+      // If the query above fails, it's either full or you're already in it
+      return res.status(400).json({ 
+        message: 'Join failed: Ride is full or you have already joined.' 
+      });
     }
 
-    if (ride.passengers.includes(userId)) {
-      return res.status(400).json({ message: 'Already joined' });
-    }
-
-    // Add user to passengers and decrement seats
-    ride.passengers.push(userId);
-    ride.seatsAvailable -= 1;
-    await ride.save();
-
-    // Optionally, update the user's joined rides (if you have a User model)
-    // const user = await User.findById(userId);
-    // user.joinedRides.push(rideId);
-    // await user.save();
-
-    res.status(200).json({ success: true, message: 'Ride joined successfully', ride });
+    res.status(200).json({ success: true, message: 'Joined successfully!', ride });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
@@ -93,12 +94,19 @@ exports.completeRide = async (req, res) => {
   try {
     const { riderId, driverId, distanceKm, riderRating, driverRating } = req.body;
 
+    // ✅ THE FIX: Verify the person clicking "Complete" is the actual driver
+    if (req.user._id.toString() !== driverId) {
+      return res.status(403).json({ 
+        message: 'Access denied: Only the assigned driver can complete this ride.' 
+      });
+    }
+
     const co2SavedKg = distanceKm * 0.121; // Assume 0.121 kg/km CO2 saved
     const greenPoints = Math.round(co2SavedKg * 10);
 
     const ride = await CompletedRide.create({
       rider: riderId,
-      driver: driverId,
+      driver: req.user._id,
       distanceKm,
       co2SavedKg,
       greenPoints,

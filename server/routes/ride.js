@@ -71,47 +71,35 @@ router.get('/history/:userId', protect, async (req, res) => {
   try {
     const userId = req.params.userId;
     
-    // Security check: ensure user can only access their own ride history
     if (req.user._id.toString() !== userId) {
-      return res.status(403).json({ error: 'Access denied: You can only view your own ride history' });
+      return res.status(403).json({ error: 'Access denied' });
     }
-    
+
     const CompletedRide = require('../models/CompletedRide');
 
-    // ✅ Fetch active rides (match via driver or passengers)
-    const activeRides = await Ride.find({
-      $or: [
-        { driver: userId },
-        { passengers: userId }
-      ]
-    })
-      .populate('driver passengers', 'name')
-      .lean();
+    // ✅ THE EFFICIENCY FIX: Run both database queries in parallel
+    // Also using .lean() to get plain JSON objects (much faster!)
+    const [activeRides, completedRides] = await Promise.all([
+      Ride.find({ $or: [{ driver: userId }, { passengers: userId }] })
+          .populate('driver passengers', 'name')
+          .lean(),
+      CompletedRide.find({ $or: [{ rider: userId }, { driver: userId }] })
+          .populate('rider driver', 'name')
+          .lean()
+    ]);
 
-    // ✅ Tag active rides
-    activeRides.forEach(ride => ride.status = 'active');
+    // Tag the data so the frontend knows which is which
+    const taggedActive = activeRides.map(r => ({ ...r, status: 'active' }));
+    const taggedCompleted = completedRides.map(r => ({ ...r, status: 'completed' }));
 
-    // ✅ Fetch completed rides (match via rider or driver)
-    const completedRides = await CompletedRide.find({
-      $or: [
-        { rider: userId },
-        { driver: userId }
-      ]
-    })
-      .populate('rider driver', 'name')
-      .lean();
-
-    // ✅ Tag completed rides
-    completedRides.forEach(ride => ride.status = 'completed');
-
-    // ✅ Combine + sort
-    const allRides = [...activeRides, ...completedRides].sort((a, b) => {
+    // Combine and sort by date (Newest first)
+    const allRides = [...taggedActive, ...taggedCompleted].sort((a, b) => {
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
 
     res.json(allRides);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch ride history' });
+    res.status(500).json({ error: 'Failed to fetch history' });
   }
 });
 module.exports = router;
