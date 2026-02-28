@@ -116,6 +116,9 @@ Thumbs.db
 *.swo
 *~
 
+# Personal docs (interview prep, notes)
+docs/
+
 # Database files
 *.db
 *.sqlite
