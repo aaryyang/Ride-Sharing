@@ -12,16 +12,18 @@ exports.completeRide = async (req, res) => {
   const co2Saved = distanceKm * CO2_PER_KM;
   const greenPoints = Math.floor(co2Saved * 10);
 
-  // ✅ Delete the active ride properly
+  // ✅ Delete the active ride and capture its origin/destination
   const originalRide = await Ride.findByIdAndDelete(rideId);
   if (!originalRide) {
     return res.status(404).json({ error: 'Active ride not found' });
   }
 
-  // ✅ Create the completed ride
+  // ✅ Create the completed ride (preserving route info)
   const completedRide = await CompletedRide.create({
     rider: riderId,
     driver: driverId,
+    origin: originalRide.origin || '',
+    destination: originalRide.destination || '',
     distanceKm,
     co2SavedKg: co2Saved,
     greenPoints,
