@@ -2068,9 +2068,21 @@
         display: none !important;
       }
 
+      /* Auth pages scroll vertically so register form (more fields) is never cut off */
+      .auth-container {
+        height: 100dvh;
+        overflow-y: auto;
+        align-items: flex-start;
+      }
+
       .auth-form-container {
         width: 100%;
-        padding: 2rem 1.2rem;
+        padding: 2rem 1.2rem 3rem;
+        min-height: auto;
+      }
+
+      .auth-form {
+        width: 100%;
       }
 
       #toast-container {
@@ -2162,6 +2174,93 @@
         color: var(--accent);
         font-weight: 500;
         margin-top: 0.2rem;
+      }
+
+      /* --- Eco stat cards: compact on narrow screens --- */
+      .eco-stat-card {
+        padding: 0.85rem 0.75rem;
+      }
+
+      .eco-stat-icon {
+        font-size: 1.4rem;
+        margin-right: 0.6rem;
+      }
+
+      .eco-stat-number {
+        font-size: 1.25rem;
+      }
+
+      .eco-stat-label {
+        font-size: 0.75rem;
+      }
+
+      /* --- Transaction items: stack so amount isn't squeezed --- */
+      .transaction-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.35rem;
+      }
+
+      .transaction-amount {
+        text-align: left;
+      }
+
+      /* --- Payment modal --- */
+      .modal-content {
+        width: 95%;
+        max-width: 95%;
+        padding: 1.25rem;
+        max-height: 92dvh;
+      }
+
+      /* --- Payment type selector: 3 per row --- */
+      .payment-type-selector {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .payment-type-option {
+        padding: 0.7rem 0.35rem;
+      }
+
+      .payment-type-option i {
+        font-size: 1.1rem;
+        margin-bottom: 0.3rem;
+      }
+
+      .payment-type-option span {
+        font-size: 0.75rem;
+      }
+
+      /* --- Ride history: no fixed height — page scrolls naturally --- */
+      #ride-history-container {
+        max-height: none;
+        overflow-y: visible;
+      }
+
+      /* --- Topbar: hide text name to save space, keep avatar --- */
+      .user-name {
+        display: none;
+      }
+
+      /* --- Ride cards: reduce padding --- */
+      .ride-card {
+        padding: 0.9rem;
+      }
+
+      /* --- Ride stats row: wrap on very narrow screens --- */
+      .ride-stats {
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+
+      /* --- Payment method cards: compact --- */
+      .payment-method-card {
+        padding: 1rem;
+      }
+
+      /* --- Section headings: slightly smaller --- */
+      .section h2 {
+        font-size: 1rem;
       }
   </style>
 
@@ -4697,7 +4796,10 @@
           showToast('Registration successful!');
           checkAuth(); // Recheck authentication and load the app
         } else {
-          showToast(data.message || 'Registration failed');
+          const errorMsg = data.message
+            || (data.errors && data.errors[0] && data.errors[0].msg)
+            || 'Registration failed';
+          showToast(errorMsg);
         }
       } catch (error) {
         console.error('Error registering user:', error);
@@ -4770,12 +4872,14 @@
         e.preventDefault();
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('register-page').style.display = 'flex';
+        document.getElementById('bottom-nav').style.display = 'none';
       });
 
       document.getElementById('switch-to-login').addEventListener('click', function (e) {
         e.preventDefault();
         document.getElementById('register-page').style.display = 'none';
         document.getElementById('login-page').style.display = 'flex';
+        document.getElementById('bottom-nav').style.display = 'none';
       });
 
       // Profile page navigation
