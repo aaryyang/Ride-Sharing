@@ -3156,6 +3156,34 @@
       loadingScreen.classList.remove('show');
     }
 
+    // Called whenever any API returns 401 — clears stale auth and shows login
+    function handleUnauthorized() {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('currentUser');
+      document.getElementById('app-container').style.display = 'none';
+      document.getElementById('login-page').style.display = 'flex';
+      document.getElementById('register-page').style.display = 'none';
+      showToast('Session expired. Please log in again.', 'warning');
+    }
+
+    // Central fetch wrapper: attaches auth header, auto-logs-out on 401
+    async function authFetch(url, options = {}) {
+      const token = localStorage.getItem('authToken');
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          ...(options.headers || {}),
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        }
+      });
+      if (response.status === 401) {
+        handleUnauthorized();
+        return null;
+      }
+      return response;
+    }
+
     // Check authentication status
     function checkAuth() {
       const token = localStorage.getItem('authToken');
@@ -3429,12 +3457,9 @@
           return;
         }
 
-        const response = await fetch(`/api/rides/history/${currentUser._id}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        const response = await authFetch(`/api/rides/history/${currentUser._id}`);
+
+        if (!response) { hideLoading(); return; } // 401 handled by authFetch
 
         if (!response.ok) {
           throw new Error('Failed to fetch ride history');
@@ -3632,12 +3657,9 @@
         const token = localStorage.getItem('authToken');
         if (!token) return;
 
-        const response = await fetch('/api/rides/payment/methods', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        const response = await authFetch('/api/rides/payment/methods');
+
+        if (!response) return; // 401 handled by authFetch
 
         if (!response.ok) {
           throw new Error('Failed to fetch payment methods');
@@ -3756,12 +3778,9 @@
         const token = localStorage.getItem('authToken');
         if (!token) return;
 
-        const response = await fetch('/api/rides/payment/transactions', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        const response = await authFetch('/api/rides/payment/transactions');
+
+        if (!response) return; // 401 handled by authFetch
 
         if (!response.ok) {
           throw new Error('Failed to fetch transaction history');
@@ -4724,13 +4743,9 @@
         // Load contacts from backend
         const token = localStorage.getItem('authToken');
         if (token) {
-          const response = await fetch('/api/rides/safety/settings', {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+          const response = await authFetch('/api/rides/safety/settings');
 
-          if (response.ok) {
+          if (response && response.ok) {
             const safetySettings = await response.json();
             emergencyContacts = safetySettings.emergencyContacts || [];
           }
@@ -4975,13 +4990,9 @@
         const token = localStorage.getItem('authToken');
         if (!token) return;
 
-        const response = await fetch('/api/rides/safety/stats', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        const response = await authFetch('/api/rides/safety/stats');
 
-        if (response.ok) {
+        if (response && response.ok) {
           const stats = await response.json();
           updateSafetyScoreDisplay(stats);
         }
