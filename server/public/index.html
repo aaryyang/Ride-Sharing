@@ -3080,16 +3080,16 @@
 
         <div class="auth-stats">
           <div class="auth-stat">
-            <div class="auth-stat-number">15K+</div>
+            <div class="auth-stat-number" id="stat-login-users">...</div>
             <div class="auth-stat-label">Active Users</div>
           </div>
           <div class="auth-stat">
-            <div class="auth-stat-number">30K+</div>
+            <div class="auth-stat-number" id="stat-login-rides">...</div>
             <div class="auth-stat-label">Rides Shared</div>
           </div>
           <div class="auth-stat">
-            <div class="auth-stat-number">250T</div>
-            <div class="auth-stat-label">CO₂ Saved</div>
+            <div class="auth-stat-number" id="stat-login-co2">...</div>
+            <div class="auth-stat-label">CO₂ Saved (kg)</div>
           </div>
         </div>
       </div>
@@ -3133,16 +3133,16 @@
 
         <div class="auth-stats">
           <div class="auth-stat">
-            <div class="auth-stat-number">15K+</div>
+            <div class="auth-stat-number" id="stat-reg-users">...</div>
             <div class="auth-stat-label">Active Users</div>
           </div>
           <div class="auth-stat">
-            <div class="auth-stat-number">30K+</div> <!-- Fixed closing tag -->
+            <div class="auth-stat-number" id="stat-reg-rides">...</div>
             <div class="auth-stat-label">Rides Shared</div>
           </div>
           <div class="auth-stat">
-            <div class="auth-stat-number">250T</div>
-            <div class="auth-stat-label">CO₂ Saved</div>
+            <div class="auth-stat-number" id="stat-reg-co2">...</div>
+            <div class="auth-stat-label">CO₂ Saved (kg)</div>
           </div>
         </div>
       </div>
@@ -4462,7 +4462,39 @@
           initMap();
         }
       }
-    }    // Handle login form submission
+    }
+
+    // Fetch live stats from the server and populate login/register banners
+    async function loadPublicStats() {
+      try {
+        const response = await fetch('/api/stats');
+        if (!response.ok) return;
+        const { totalUsers, totalRides, totalCo2Kg } = await response.json();
+
+        const formatNum = (n) => n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K' : String(n);
+        const co2Display = totalCo2Kg >= 1000
+          ? (totalCo2Kg / 1000).toFixed(1).replace(/\.0$/, '') + 'T'
+          : totalCo2Kg.toFixed(1) + 'kg';
+
+        ['stat-login-users', 'stat-reg-users'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = formatNum(totalUsers);
+        });
+        ['stat-login-rides', 'stat-reg-rides'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = formatNum(totalRides);
+        });
+        ['stat-login-co2', 'stat-reg-co2'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = co2Display;
+        });
+      } catch (err) {
+        // Silently fail — stat elements keep their placeholder text
+        console.warn('Could not load public stats:', err);
+      }
+    }
+
+    // Handle login form submission
     async function handleLogin(e) {
       e.preventDefault();
 
@@ -4559,6 +4591,9 @@
     document.addEventListener('DOMContentLoaded', function () {
       // Initialize application
       checkAuth();
+
+      // Load live stats for login/register banners
+      loadPublicStats();
 
       // Setup navigation (sidebar + bottom nav)
       document.querySelectorAll('.nav-item, .bottom-nav-item').forEach(item => {

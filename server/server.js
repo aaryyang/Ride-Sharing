@@ -13,6 +13,10 @@ const rideRoutes = require('./routes/ride');
 const authRoutes = require('./routes/auth');
 const { protect } = require('./utils/authMiddleware'); // Import the protect middleware
 
+// Import models for public stats
+const User = require('./models/User');
+const CompletedRide = require('./models/CompletedRide');
+
 dotenv.config();
 const app = express();
 const server = http.createServer(app);
@@ -63,6 +67,23 @@ app.use(express.static('public'));
 // Use routes
 app.use('/api/rides', rideRoutes);
 app.use('/api/auth', authRoutes);
+
+// Public stats endpoint — no auth required
+app.get('/api/stats', async (req, res) => {
+  try {
+    const [totalUsers, totalRides, co2Result] = await Promise.all([
+      User.countDocuments(),
+      CompletedRide.countDocuments(),
+      CompletedRide.aggregate([
+        { $group: { _id: null, totalCo2: { $sum: '$co2SavedKg' } } }
+      ])
+    ]);
+    const totalCo2Kg = co2Result.length > 0 ? co2Result[0].totalCo2 : 0;
+    res.json({ totalUsers, totalRides, totalCo2Kg });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to load stats' });
+  }
+});
 
 // Health check route
 app.get('/', (req, res) => {
