@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const completedRideSchema = new mongoose.Schema({
   rider: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   driver: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  origin: { type: String, default: '' },
+  destination: { type: String, default: '' },
   distanceKm: { type: Number, required: true },
   co2SavedKg: { type: Number, required: true },
   greenPoints: { type: Number, required: true },
