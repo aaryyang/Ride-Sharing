@@ -463,6 +463,20 @@
       border-radius: 6px;
       font-size: 0.95rem;
       transition: all 0.3s;
+      box-sizing: border-box;
+      background: #fff;
+      color: var(--text-dark);
+      font-family: inherit;
+    }
+
+    /* Normalize date/time inputs — iOS Safari renders them gray with
+       its own chrome unless -webkit-appearance is reset */
+    input[type="date"].form-input,
+    input[type="time"].form-input {
+      -webkit-appearance: none;
+      appearance: none;
+      min-width: 0;
+      display: block;
     }
 
     .form-input:focus {
