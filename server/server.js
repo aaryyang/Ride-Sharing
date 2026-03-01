@@ -35,7 +35,7 @@ app.use(helmet({
       styleSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com", "https://cdnjs.cloudflare.com", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
       imgSrc: ["'self'", "data:", "https:", "blob:"],
-      connectSrc: ["'self'", "wss:", "ws:", "https://unpkg.com"],
+      connectSrc: ["'self'", "wss:", "ws:", "https://unpkg.com", "https://nominatim.openstreetmap.org"],
       scriptSrcAttr: ["'unsafe-inline'"],
     },
   },

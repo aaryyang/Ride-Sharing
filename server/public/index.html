@@ -2121,9 +2121,49 @@
         border-top-color: var(--primary-light);
         background: rgba(255, 255, 255, 0.08);
       }
-    }
+
+      /* ── Star rating widget ───────────────────────── */
+      .star-rating-widget {
+        display: flex;
+        gap: 0.35rem;
+        font-size: 2rem;
+        cursor: pointer;
+        margin-bottom: 0.25rem;
+      }
+
+      .star-rating-widget span {
+        color: #ddd;
+        transition: color 0.15s;
+        user-select: none;
+        line-height: 1;
+      }
+
+      /* Complete-ride modal helpers */
+      .cr-route-box {
+        background: var(--secondary);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1.1rem;
+        font-size: 0.9rem;
+      }
+
+      .cr-route-box p+p {
+        margin-top: 0.4rem;
+      }
+
+      .cr-distance-hint {
+        font-size: 0.78rem;
+        color: #888;
+        margin-left: 0.4rem;
+      }
+
+      .cr-rating-label {
+        font-size: 0.82rem;
+        color: var(--accent);
+        font-weight: 500;
+        margin-top: 0.2rem;
+      }
   </style>
-</head>
 
 <body>
   <!-- Toast Notification Container -->
@@ -2292,20 +2332,41 @@
               </div>
               <div class="form-row">
                 <div class="form-group">
+                  <label class="form-label">Date</label>
+                  <input type="date" class="form-input" id="search-date">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Min. Seats</label>
+                  <select class="form-select" id="search-min-seats">
+                    <option value="">Any</option>
+                    <option value="1">1+</option>
+                    <option value="2">2+</option>
+                    <option value="3">3+</option>
+                    <option value="4">4+</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
                   <label class="form-label">Vehicle Type</label>
                   <select class="form-select" id="search-vehicle-type">
                     <option value="">Any Vehicle</option>
                     <option value="Car">Car</option>
                     <option value="Bike">Bike</option>
                     <option value="SUV">SUV</option>
+                    <option value="Compact">Compact Car</option>
+                    <option value="Sedan">Sedan</option>
+                    <option value="Electric">Electric</option>
+                    <option value="Hybrid">Hybrid</option>
+                    <option value="Van">Van / Mini Bus</option>
                   </select>
                 </div>
-                <div class="form-group">
-                  <button type="submit" class="btn btn-primary" style="margin-top: 1.7rem;">
+                <div class="form-group" style="display:flex;flex-direction:column;justify-content:flex-end;gap:0.5rem;">
+                  <button type="submit" class="btn btn-primary">
                     <i class="fas fa-search"></i> Search Rides
                   </button>
-                  <button type="button" class="btn btn-outline" id="show-all-rides-btn" style="margin-top: 0.5rem;">
-                    <i class="fas fa-list"></i> Show All Rides
+                  <button type="button" class="btn btn-outline" id="show-all-rides-btn">
+                    <i class="fas fa-list"></i> Show All
                   </button>
                 </div>
               </div>
@@ -2961,6 +3022,48 @@
   </div>
 
   <!-- Add Emergency Contact Modal -->
+  <!-- Complete Ride Modal -->
+  <div id="complete-ride-modal" class="modal-overlay" style="display:none;">
+    <div class="modal">
+      <div class="modal-header">
+        <h3><i class="fas fa-check-circle" style="color:var(--accent);"></i>&nbsp; Complete Ride</h3>
+        <button class="close-btn" onclick="hideCompleteRideModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="cr-route-box">
+          <p><i class="fas fa-map-marker-alt" style="color:green;"></i> <strong>From:</strong> <span
+              id="cr-from">—</span></p>
+          <p><i class="fas fa-map-marker-alt" style="color:red;"></i> <strong>To:</strong> <span id="cr-to">—</span></p>
+        </div>
+        <div class="form-group">
+          <label class="form-label">
+            Distance (km)
+            <span id="cr-distance-hint" class="cr-distance-hint"></span>
+          </label>
+          <input type="number" class="form-input" id="cr-distance" placeholder="Auto-calculating…" min="0.1" step="0.1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Rate the Passenger</label>
+          <div class="star-rating-widget" id="cr-passenger-stars">
+            <span data-val="1">&#9733;</span>
+            <span data-val="2">&#9733;</span>
+            <span data-val="3">&#9733;</span>
+            <span data-val="4">&#9733;</span>
+            <span data-val="5">&#9733;</span>
+          </div>
+          <input type="hidden" id="cr-passenger-rating" value="">
+          <div id="cr-rating-label" class="cr-rating-label">Click a star to rate</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="hideCompleteRideModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="submitCompleteRide()">
+          <i class="fas fa-check"></i> Confirm Completion
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div id="add-contact-modal" class="modal-overlay" style="display: none;">
     <div class="modal">
       <div class="modal-header">
@@ -3571,9 +3674,12 @@
         if (searchParams.origin) queryParams.append('origin', searchParams.origin);
         if (searchParams.destination) queryParams.append('destination', searchParams.destination);
         if (searchParams.vehicleType) queryParams.append('vehicleType', searchParams.vehicleType);
+        if (searchParams.date) queryParams.append('date', searchParams.date);
+        if (searchParams.minSeats) queryParams.append('minSeats', searchParams.minSeats);
 
-        // If no search params, we'll use the findMatches endpoint, otherwise use search endpoint
-        let response; if (Object.keys(searchParams).length > 0 && (searchParams.origin || searchParams.destination)) {
+        const hasFilters = !!(searchParams.origin || searchParams.destination || searchParams.vehicleType || searchParams.date || searchParams.minSeats);
+        // Use the search endpoint when any filter is active, otherwise fetch all available rides
+        let response; if (hasFilters) {
           response = await fetch(`/api/rides/search?${queryParams.toString()}`, {
             method: 'GET',
             headers: {
@@ -3679,6 +3785,7 @@
         }
 
         const rides = await response.json();
+        window._rideHistoryData = rides; // cache for complete-ride modal
         const rideHistoryContainer = document.getElementById('ride-history-container');
 
         if (!rideHistoryContainer) {
@@ -3762,7 +3869,7 @@
         document.querySelectorAll('.complete-ride-btn').forEach(btn => {
           btn.addEventListener('click', function () {
             const rideId = this.getAttribute('data-ride-id');
-            completeRide(rideId);
+            openCompleteRideModal(rideId);
           });
         });
 
@@ -3813,67 +3920,136 @@
       }
     }
 
-    // Complete a ride
-    async function completeRide(rideId) {
+    // ── Haversine distance (km) between two lat/lon points ─────────────────
+    function haversineKm(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) ** 2 +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) ** 2;
+      return +(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))).toFixed(1);
+    }
+
+    // ── Nominatim geocoding ──────────────────────────────────────
+    async function geocodePlace(query) {
+      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
+      try {
+        const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+        const data = await res.json();
+        return data.length > 0 ? { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) } : null;
+      } catch { return null; }
+    }
+
+    // ── Interactive star-rating widget ────────────────────────────
+    function initStarRating(containerId, hiddenInputId, labelId) {
+      const container = document.getElementById(containerId);
+      const hidden = document.getElementById(hiddenInputId);
+      const label = document.getElementById(labelId);
+      const ratingLabels = ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
+      const stars = container.querySelectorAll('span');
+      const paint = (n) => stars.forEach((s, i) => s.style.color = i < n ? '#f4a100' : '#ddd');
+      stars.forEach(star => {
+        star.addEventListener('mouseover', () => paint(parseInt(star.dataset.val)));
+        star.addEventListener('mouseout', () => paint(parseInt(hidden.value || 0)));
+        star.addEventListener('click', () => {
+          const val = parseInt(star.dataset.val);
+          hidden.value = val;
+          paint(val);
+          if (label) label.textContent = ratingLabels[val];
+        });
+      });
+    }
+
+    // ── Complete-ride modal ─────────────────────────────────────────
+    let _completeRideTarget = null;
+
+    async function openCompleteRideModal(rideId) {
+      const ride = (window._rideHistoryData || []).find(r => r._id === rideId);
+      const origin = ride?.origin || '';
+      const destination = ride?.destination || '';
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      const riderId = (ride?.passengers?.[0]?._id || ride?.passengers?.[0]) || currentUser?._id;
+      const driverId = currentUser?._id;
+
+      document.getElementById('cr-from').textContent = origin || '—';
+      document.getElementById('cr-to').textContent = destination || '—';
+      document.getElementById('cr-distance').value = '';
+      document.getElementById('cr-distance-hint').textContent = origin && destination ? '(auto-calculating…)' : '(enter manually)';
+      document.getElementById('cr-passenger-rating').value = '';
+      document.getElementById('cr-rating-label').textContent = 'Click a star to rate';
+      document.querySelectorAll('#cr-passenger-stars span').forEach(s => s.style.color = '#ddd');
+
+      _completeRideTarget = { rideId, riderId, driverId };
+      document.getElementById('complete-ride-modal').style.display = 'flex';
+      initStarRating('cr-passenger-stars', 'cr-passenger-rating', 'cr-rating-label');
+
+      // Auto-calculate distance via geocoding (runs in background)
+      if (origin && destination) {
+        try {
+          const [from, to] = await Promise.all([geocodePlace(origin), geocodePlace(destination)]);
+          if (from && to) {
+            document.getElementById('cr-distance').value = haversineKm(from.lat, from.lon, to.lat, to.lon);
+            document.getElementById('cr-distance-hint').textContent = '(auto-calculated – edit if needed)';
+          } else {
+            document.getElementById('cr-distance-hint').textContent = '(enter manually)';
+          }
+        } catch {
+          document.getElementById('cr-distance-hint').textContent = '(enter manually)';
+        }
+      }
+    }
+
+    function hideCompleteRideModal() {
+      document.getElementById('complete-ride-modal').style.display = 'none';
+      _completeRideTarget = null;
+    }
+
+    async function submitCompleteRide() {
+      const distanceVal = document.getElementById('cr-distance').value;
+      const ratingVal = document.getElementById('cr-passenger-rating').value;
+
+      if (!distanceVal || isNaN(distanceVal) || parseFloat(distanceVal) <= 0) {
+        showToast('Please enter a valid distance'); return;
+      }
+      if (!ratingVal) {
+        showToast('Please rate the passenger'); return;
+      }
+
+      hideCompleteRideModal();
       showLoading();
 
       try {
         const token = localStorage.getItem('authToken');
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
-        if (!token || !currentUser) {
-          showToast('Please login to complete a ride');
-          hideLoading();
-          return;
-        }
-
-        // Prompt for ride details
-        const distanceKm = prompt('Enter the distance traveled (in km):');
-        if (!distanceKm || isNaN(distanceKm)) {
-          showToast('Please enter a valid distance');
-          hideLoading();
-          return;
-        }
-
-        const riderRating = prompt('Rate the passengers (1-5 stars):');
-        if (!riderRating || isNaN(riderRating) || riderRating < 1 || riderRating > 5) {
-          showToast('Please enter a valid rating between 1-5');
-          hideLoading();
-          return;
-        }
-
         const response = await fetch('/api/rides/complete', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({
-            rideId: rideId,
-            riderId: currentUser._id, // For simplicity, using current user as rider
-            driverId: currentUser._id,
-            distanceKm: parseFloat(distanceKm),
-            riderRating: parseInt(riderRating),
-            driverRating: 5 // Default driver rating
+            rideId: _completeRideTarget.rideId,
+            riderId: _completeRideTarget.riderId,
+            driverId: _completeRideTarget.driverId || currentUser._id,
+            distanceKm: parseFloat(distanceVal),
+            riderRating: parseInt(ratingVal),
+            driverRating: 5
           })
         });
-
         const data = await response.json();
-
         if (response.ok) {
-          showToast('Ride completed successfully! CO₂ saved and green points earned.');
-          // Refresh the ride history
+          showToast('Ride completed! CO₂ saved and green points earned 🌿');
           await loadRideHistory();
         } else {
           showToast(data.message || 'Failed to complete ride');
         }
       } catch (error) {
-        console.error('Error completing ride:', error);
         showToast('Error completing ride. Please try again.');
       } finally {
         hideLoading();
       }
     }
+
+    // Legacy wrapper – delegates to the new modal flow
+    function completeRide(rideId) { openCompleteRideModal(rideId); }
 
     // Load payment methods
     async function loadPaymentMethods() {
@@ -4353,67 +4529,7 @@
       }
     }
 
-    // Complete a ride
-    async function completeRide(rideId) {
-      showLoading();
-
-      try {
-        const token = localStorage.getItem('authToken');
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
-        if (!token || !currentUser) {
-          showToast('Please login to complete a ride');
-          hideLoading();
-          return;
-        }
-
-        // Prompt for ride details
-        const distanceKm = prompt('Enter the distance traveled (in km):');
-        if (!distanceKm || isNaN(distanceKm)) {
-          showToast('Please enter a valid distance');
-          hideLoading();
-          return;
-        }
-
-        const riderRating = prompt('Rate the passengers (1-5 stars):');
-        if (!riderRating || isNaN(riderRating) || riderRating < 1 || riderRating > 5) {
-          showToast('Please enter a valid rating between 1-5');
-          hideLoading();
-          return;
-        }
-
-        const response = await fetch('/api/rides/complete', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            rideId: rideId,
-            riderId: currentUser._id, // For simplicity, using current user as rider
-            driverId: currentUser._id,
-            distanceKm: parseFloat(distanceKm),
-            riderRating: parseInt(riderRating),
-            driverRating: 5 // Default driver rating
-          })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          showToast('Ride completed successfully! CO₂ saved and green points earned.');
-          // Refresh the ride history
-          await loadRideHistory();
-        } else {
-          showToast(data.message || 'Failed to complete ride');
-        }
-      } catch (error) {
-        console.error('Error completing ride:', error);
-        showToast('Error completing ride. Please try again.');
-      } finally {
-        hideLoading();
-      }
-    }
+    // (completeRide / openCompleteRideModal defined above)
 
     let bookedRides = []; // Array to store booked rides (deprecated - now using backend)
 
@@ -4696,7 +4812,9 @@
           const searchParams = {
             origin: document.getElementById('search-origin').value,
             destination: document.getElementById('search-destination').value,
-            vehicleType: document.getElementById('search-vehicle-type').value
+            vehicleType: document.getElementById('search-vehicle-type').value,
+            date: document.getElementById('search-date').value,
+            minSeats: document.getElementById('search-min-seats').value
           };
 
           loadNearbyRides(searchParams);
@@ -4707,12 +4825,12 @@
       const showAllRidesBtn = document.getElementById('show-all-rides-btn');
       if (showAllRidesBtn) {
         showAllRidesBtn.addEventListener('click', function () {
-          // Clear search form
+          // Clear all search filters
           document.getElementById('search-origin').value = '';
           document.getElementById('search-destination').value = '';
           document.getElementById('search-vehicle-type').value = '';
-
-          // Load all rides
+          document.getElementById('search-date').value = '';
+          document.getElementById('search-min-seats').value = '';
           loadNearbyRides();
         });
       }

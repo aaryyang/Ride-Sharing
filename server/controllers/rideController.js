@@ -21,14 +21,20 @@ exports.createRide = async (req, res) => {
 
 exports.searchRides = async (req, res) => {
   try {
-    const { origin, destination, vehicleType } = req.query;
+    const { origin, destination, vehicleType, date, minSeats } = req.query;
 
-    const rides = await Ride.find({
-      origin: { $regex: origin, $options: 'i' },
-      destination: { $regex: destination, $options: 'i' },
-      vehicleType,
-      seatsAvailable: { $gt: 0 },
-    })
+    const query = { seatsAvailable: { $gt: 0 } };
+    if (origin && origin.trim()) query.origin = { $regex: origin.trim(), $options: 'i' };
+    if (destination && destination.trim()) query.destination = { $regex: destination.trim(), $options: 'i' };
+    if (vehicleType) query.vehicleType = vehicleType;
+    if (minSeats) query.seatsAvailable = { $gte: parseInt(minSeats) };
+    if (date) {
+      const start = new Date(date); start.setHours(0, 0, 0, 0);
+      const end = new Date(date); end.setHours(23, 59, 59, 999);
+      query.departureTime = { $gte: start, $lte: end };
+    }
+
+    const rides = await Ride.find(query)
       .populate('driver', 'name rating')
       .sort('departureTime');
 
@@ -46,12 +52,12 @@ exports.joinRide = async (req, res) => {
     // ✅ THE ATOMIC FIX: 
     // We only find the ride IF seats > 0 AND the user is NOT already a passenger
     const ride = await Ride.findOneAndUpdate(
-      { 
-        _id: rideId, 
+      {
+        _id: rideId,
         seatsAvailable: { $gt: 0 },         // Parity check: must have seats
         passengers: { $ne: userId }         // Security check: user not already inside
       },
-      { 
+      {
         $inc: { seatsAvailable: -1 },       // Subtract 1 seat atomically
         $push: { passengers: userId }       // Add user to array atomically
       },
@@ -60,8 +66,8 @@ exports.joinRide = async (req, res) => {
 
     if (!ride) {
       // If the query above fails, it's either full or you're already in it
-      return res.status(400).json({ 
-        message: 'Join failed: Ride is full or you have already joined.' 
+      return res.status(400).json({
+        message: 'Join failed: Ride is full or you have already joined.'
       });
     }
 
@@ -96,8 +102,8 @@ exports.completeRide = async (req, res) => {
 
     // ✅ THE FIX: Verify the person clicking "Complete" is the actual driver
     if (req.user._id.toString() !== driverId) {
-      return res.status(403).json({ 
-        message: 'Access denied: Only the assigned driver can complete this ride.' 
+      return res.status(403).json({
+        message: 'Access denied: Only the assigned driver can complete this ride.'
       });
     }
 
