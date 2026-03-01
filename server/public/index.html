@@ -2262,6 +2262,28 @@
       .section h2 {
         font-size: 1rem;
       }
+
+      /* --- Date / Time inputs ---
+           16px prevents iOS Safari from auto-zooming on focus.
+           min-width:0 stops them overflowing their flex parent.
+           padding-right leaves room for the native calendar/clock icon. */
+      input[type="date"].form-input,
+      input[type="time"].form-input {
+        font-size: 16px;
+        min-width: 0;
+        width: 100%;
+        padding-right: 0.5rem;
+        box-sizing: border-box;
+      }
+
+      /* Prevent the native date/time icon from being clipped */
+      input[type="date"]::-webkit-calendar-picker-indicator,
+      input[type="time"]::-webkit-calendar-picker-indicator {
+        opacity: 0.6;
+        cursor: pointer;
+        padding: 0;
+        margin-left: 2px;
+      }
   </style>
 
 <body>
