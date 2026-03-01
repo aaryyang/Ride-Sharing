@@ -3479,6 +3479,7 @@
       document.getElementById('app-container').style.display = 'none';
       document.getElementById('login-page').style.display = 'flex';
       document.getElementById('register-page').style.display = 'none';
+      document.getElementById('bottom-nav').style.display = 'none';
       showToast('Session expired. Please log in again.', 'warning');
     }
 
@@ -3510,6 +3511,7 @@
         document.getElementById('app-container').style.display = 'flex';
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('register-page').style.display = 'none';
+        document.getElementById('bottom-nav').style.display = '';
 
         updateUserProfile(currentUser);
         loadDashboardData();
@@ -3521,6 +3523,7 @@
         document.getElementById('app-container').style.display = 'none';
         document.getElementById('login-page').style.display = 'flex';
         document.getElementById('register-page').style.display = 'none';
+        document.getElementById('bottom-nav').style.display = 'none';
       }
     }
 
