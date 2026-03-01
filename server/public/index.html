@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -81,17 +82,18 @@
       font-size: 1.1rem;
     }
 
-    .nav-item:hover, .nav-item.active {
+    .nav-item:hover,
+    .nav-item.active {
       background: var(--accent);
       color: var(--text-light);
     }
 
     #app-container {
-    display: flex;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-  }
+      display: flex;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
 
     .main-container {
       flex: 1;
@@ -107,7 +109,7 @@
       align-items: center;
       padding: 1rem 2rem;
       background: var(--text-light);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
       z-index: 5;
     }
 
@@ -154,7 +156,7 @@
       top: 100%;
       right: 0;
       background: var(--text-light);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       border-radius: 8px;
       width: 180px;
       display: none;
@@ -196,7 +198,7 @@
       padding: 2rem;
       background: var(--text-light);
       border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
     .hero h1 {
@@ -218,7 +220,7 @@
       border-radius: 10px;
       padding: 1.5rem;
       margin-bottom: 1.5rem;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
       animation: fadeIn 0.5s ease-out;
     }
 
@@ -244,7 +246,7 @@
 
     .ride-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     }
 
     .ride-header {
@@ -387,10 +389,11 @@
       background: var(--text-light);
       border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     }
 
-    .leaderboard th, .leaderboard td {
+    .leaderboard th,
+    .leaderboard td {
       padding: 1rem;
       text-align: left;
       border-bottom: 1px solid #eee;
@@ -415,7 +418,7 @@
       width: 100%;
       border-radius: 10px;
       border: 2px solid var(--primary-light);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       margin-top: 1.5rem;
     }
 
@@ -529,7 +532,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(255,255,255,0.9);
+      background: rgba(255, 255, 255, 0.9);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -573,6 +576,7 @@
         opacity: 0;
         transform: translateY(10px);
       }
+
       100% {
         opacity: 1;
         transform: translateY(0);
@@ -580,25 +584,36 @@
     }
 
     @keyframes pulse {
-      0%, 100% {
+
+      0%,
+      100% {
         background-color: #e9f5ef;
       }
+
       50% {
         background-color: var(--success);
       }
     }
 
     @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }    /* Responsive */
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Responsive */
     @media (max-width: 768px) {
       .sidebar {
         width: 70px;
         padding: 1.5rem 0.5rem;
       }
 
-      .sidebar-header h2, .nav-item span {
+      .sidebar-header h2,
+      .nav-item span {
         display: none;
       }
 
@@ -620,7 +635,8 @@
         flex-direction: column;
       }
 
-      .auth-banner, .auth-form-container {
+      .auth-banner,
+      .auth-form-container {
         flex: none;
         width: 100%;
       }
@@ -691,7 +707,7 @@
 
     .payment-method-card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
     }
 
     .payment-method-header {
@@ -801,7 +817,7 @@
       top: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0,0,0,0.5);
+      background-color: rgba(0, 0, 0, 0.5);
       backdrop-filter: blur(5px);
     }
 
@@ -820,7 +836,7 @@
       max-width: 500px;
       max-height: 80vh;
       overflow-y: auto;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
 
     .modal-header {
@@ -887,7 +903,9 @@
       font-size: 1.5rem;
       margin-bottom: 0.5rem;
       display: block;
-    }    .payment-type-option span {
+    }
+
+    .payment-type-option span {
       font-size: 0.85rem;
       font-weight: 500;
     }
@@ -909,7 +927,7 @@
     .setting-item:hover {
       border-color: var(--primary-light);
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
     }
 
     .setting-header {
@@ -930,15 +948,41 @@
       color: white;
     }
 
-    .setting-icon.eco { background: linear-gradient(135deg, var(--primary), var(--success)); }
-    .setting-icon.notification { background: linear-gradient(135deg, #f39c12, #e67e22); }
-    .setting-icon.distance { background: linear-gradient(135deg, #3498db, #2980b9); }
-    .setting-icon.privacy { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
-    .setting-icon.location { background: linear-gradient(135deg, #e74c3c, #c0392b); }
-    .setting-icon.security { background: linear-gradient(135deg, #34495e, #2c3e50); }
-    .setting-icon.theme { background: linear-gradient(135deg, #ff6b6b, #ee5a52); }
-    .setting-icon.units { background: linear-gradient(135deg, #4ecdc4, #44a08d); }
-    .setting-icon.data { background: linear-gradient(135deg, #a8e6cf, #88d8a3); }
+    .setting-icon.eco {
+      background: linear-gradient(135deg, var(--primary), var(--success));
+    }
+
+    .setting-icon.notification {
+      background: linear-gradient(135deg, #f39c12, #e67e22);
+    }
+
+    .setting-icon.distance {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+    }
+
+    .setting-icon.privacy {
+      background: linear-gradient(135deg, #9b59b6, #8e44ad);
+    }
+
+    .setting-icon.location {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+    }
+
+    .setting-icon.security {
+      background: linear-gradient(135deg, #34495e, #2c3e50);
+    }
+
+    .setting-icon.theme {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    }
+
+    .setting-icon.units {
+      background: linear-gradient(135deg, #4ecdc4, #44a08d);
+    }
+
+    .setting-icon.data {
+      background: linear-gradient(135deg, #a8e6cf, #88d8a3);
+    }
 
     .setting-info h4 {
       margin: 0 0 0.25rem 0;
@@ -1007,11 +1051,11 @@
       border-radius: 50%;
     }
 
-    input:checked + .toggle-slider {
+    input:checked+.toggle-slider {
       background-color: var(--primary);
     }
 
-    input:checked + .toggle-slider:before {
+    input:checked+.toggle-slider:before {
       transform: translateX(26px);
     }
 
@@ -1037,12 +1081,12 @@
       transition: all 0.3s ease;
     }
 
-    .checkbox-item input:checked + .checkbox-custom {
+    .checkbox-item input:checked+.checkbox-custom {
       background-color: var(--primary);
       border-color: var(--primary);
     }
 
-    .checkbox-item input:checked + .checkbox-custom:after {
+    .checkbox-item input:checked+.checkbox-custom:after {
       content: "✓";
       position: absolute;
       color: white;
@@ -1089,9 +1133,17 @@
       border: 2px solid #eee;
     }
 
-    .green-theme { background: linear-gradient(135deg, var(--primary), var(--success)); }
-    .blue-theme { background: linear-gradient(135deg, #3498db, #2980b9); }
-    .dark-theme { background: linear-gradient(135deg, #34495e, #2c3e50); }
+    .green-theme {
+      background: linear-gradient(135deg, var(--primary), var(--success));
+    }
+
+    .blue-theme {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+    }
+
+    .dark-theme {
+      background: linear-gradient(135deg, #34495e, #2c3e50);
+    }
 
     .theme-option span {
       font-size: 0.85rem;
@@ -1133,7 +1185,7 @@
     .progress-bar {
       width: 100%;
       height: 8px;
-      background: rgba(255,255,255,0.3);
+      background: rgba(255, 255, 255, 0.3);
       border-radius: 4px;
       overflow: hidden;
       margin-bottom: 0.5rem;
@@ -1141,7 +1193,7 @@
 
     .progress-fill {
       height: 100%;
-      background: rgba(255,255,255,0.9);
+      background: rgba(255, 255, 255, 0.9);
       border-radius: 4px;
       transition: width 0.3s ease;
     }
@@ -1167,61 +1219,65 @@
     .data-info p {
       margin: 0.25rem 0;
       font-size: 0.9rem;
-    }    /* Responsive Settings */
+    }
+
+    /* Responsive Settings */
     @media (max-width: 768px) {
       .settings-grid {
         gap: 1rem;
       }
-      
+
       .setting-item {
         padding: 1rem;
       }
-      
+
       .setting-header {
         flex-direction: column;
         align-items: flex-start;
         text-align: left;
       }
-      
+
       .setting-icon {
         margin-right: 0;
         margin-bottom: 0.75rem;
       }
-      
+
       .goals-grid {
         grid-template-columns: 1fr;
       }
-      
+
       .goal-card {
         flex-direction: column;
         text-align: center;
       }
-      
+
       .goal-icon {
         margin-right: 0;
         margin-bottom: 0.75rem;
       }
-      
+
       .theme-selector {
         flex-direction: column;
         gap: 0.5rem;
       }
-      
+
       .theme-option {
         flex-direction: row;
         justify-content: flex-start;
       }
-      
+
       .theme-preview {
         margin-right: 0.75rem;
         margin-bottom: 0;
       }
-    }    /* Dark Mode Improvements */
+    }
+
+    /* Dark Mode Improvements */
     .dark-mode .section {
       background: #2c3e50 !important;
       color: #ecf0f1 !important;
     }
-    
+
     .dark-mode .ride-card,
     .dark-mode .payment-method-card,
     .dark-mode .setting-item,
@@ -1230,72 +1286,72 @@
       color: #ecf0f1 !important;
       border-color: #4ecdc4 !important;
     }
-    
+
     .dark-mode .form-input,
     .dark-mode .form-select {
       background: #34495e !important;
       color: #ecf0f1 !important;
       border-color: #4ecdc4 !important;
     }
-    
+
     .dark-mode .form-input::placeholder {
       color: #bdc3c7 !important;
     }
-    
+
     .dark-mode .topbar {
       background: #2c3e50 !important;
       color: #ecf0f1 !important;
     }
-    
+
     .dark-mode .sidebar {
       background: #1a1a1a !important;
     }
-    
+
     .dark-mode .nav-item {
       color: #ecf0f1 !important;
     }
-    
+
     .dark-mode .nav-item:hover,
     .dark-mode .nav-item.active {
       background: #4ecdc4 !important;
       color: #1a1a1a !important;
     }
-    
+
     .dark-mode .auth-container {
       background: #1a1a1a;
     }
-    
+
     .dark-mode .auth-banner {
       background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
     }
-    
+
     .dark-mode .auth-form-container {
       background: #2c3e50 !important;
     }
-    
+
     .dark-mode .modal-content {
       background: #2c3e50 !important;
       color: #ecf0f1 !important;
     }
-    
+
     .dark-mode .loading-screen {
       background: rgba(26, 26, 26, 0.9) !important;
     }
-    
+
     .dark-mode .leaderboard table {
       background: #2c3e50 !important;
     }
-    
+
     .dark-mode .leaderboard th {
       background: #34495e !important;
       color: #ecf0f1 !important;
     }
-    
+
     .dark-mode .leaderboard td {
       color: #ecf0f1 !important;
       border-bottom-color: #34495e !important;
     }
-    
+
     .dark-mode .leaderboard tr:hover {
       background: #34495e !important;
     }
@@ -1416,11 +1472,11 @@
       border-radius: 50%;
     }
 
-    input:checked + .toggle-slider {
+    input:checked+.toggle-slider {
       background-color: var(--accent);
     }
 
-    input:checked + .toggle-slider:before {
+    input:checked+.toggle-slider:before {
       transform: translateX(26px);
     }
 
@@ -1453,7 +1509,7 @@
       background: white;
       border-radius: 8px;
       padding: 1.5rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .tip-icon {
@@ -1520,7 +1576,7 @@
       background: white;
       border-radius: 8px;
       padding: 1.5rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .safety-score-visual {
@@ -1614,28 +1670,305 @@
       .safety-features-grid {
         grid-template-columns: 1fr;
       }
-      
+
       .safety-tips {
         grid-template-columns: 1fr;
       }
-      
+
       .safety-score-card {
         flex-direction: column;
         text-align: center;
       }
-      
+
       .safety-score-visual {
         margin-right: 0;
         margin-bottom: 1rem;
       }
-      
+
       .safety-metrics {
         justify-content: center;
       }
     }
+
+    /* ===================== TOAST NOTIFICATIONS ===================== */
+    #toast-container {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-width: 320px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: #fff;
+      border-radius: 8px;
+      padding: 0.85rem 1.1rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      animation: toastIn 0.3s cubic-bezier(.21, 1.02, .73, 1) forwards;
+      border-left: 4px solid;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      pointer-events: all;
+    }
+
+    .toast.toast-exit {
+      animation: toastOut 0.25s ease-in forwards;
+    }
+
+    .toast.success {
+      border-color: var(--primary);
+    }
+
+    .toast.error {
+      border-color: var(--error);
+    }
+
+    .toast.warning {
+      border-color: var(--warning);
+    }
+
+    .toast.info {
+      border-color: #4a90e2;
+    }
+
+    .toast i.toast-icon {
+      font-size: 1.1rem;
+      margin-top: 1px;
+      flex-shrink: 0;
+    }
+
+    .toast.success i.toast-icon {
+      color: var(--primary);
+    }
+
+    .toast.error i.toast-icon {
+      color: var(--error);
+    }
+
+    .toast.warning i.toast-icon {
+      color: #c9a000;
+    }
+
+    .toast.info i.toast-icon {
+      color: #4a90e2;
+    }
+
+    .toast-message {
+      flex: 1;
+      color: var(--text-dark);
+    }
+
+    .toast-close {
+      cursor: pointer;
+      color: #aaa;
+      font-size: 0.75rem;
+      padding: 0 0.1rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .toast-close:hover {
+      color: #555;
+    }
+
+    @keyframes toastIn {
+      from {
+        transform: translateX(110%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes toastOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      to {
+        transform: translateX(110%);
+        opacity: 0;
+      }
+    }
+
+    /* ===================== MOBILE RESPONSIVE ===================== */
+    .bottom-nav {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        overflow: unset;
+      }
+
+      #app-container {
+        height: 100%;
+        min-height: 100dvh;
+      }
+
+      .sidebar {
+        display: none !important;
+      }
+
+      .main-container {
+        height: calc(100dvh - 56px);
+      }
+
+      .main {
+        padding: 0.9rem;
+      }
+
+      .topbar {
+        padding: 0.75rem 1rem;
+      }
+
+      .topbar-title {
+        font-size: 1rem;
+      }
+
+      .hero {
+        padding: 1.2rem;
+      }
+
+      .hero h1 {
+        font-size: 1.4rem;
+      }
+
+      .hero p {
+        font-size: 0.88rem;
+      }
+
+      .section {
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .section h2 {
+        font-size: 1.1rem;
+      }
+
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .rides-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .eco-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .leaderboard {
+        overflow-x: auto;
+      }
+
+      #map {
+        height: 240px;
+        margin-top: 1rem;
+      }
+
+      .auth-banner {
+        display: none !important;
+      }
+
+      .auth-form-container {
+        width: 100%;
+        padding: 2rem 1.2rem;
+      }
+
+      #toast-container {
+        top: auto;
+        bottom: 68px;
+        right: 0.75rem;
+        left: 0.75rem;
+        max-width: 100%;
+      }
+
+      /* Bottom navigation bar */
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 56px;
+        background: var(--primary);
+        z-index: 200;
+        justify-content: space-around;
+        align-items: stretch;
+        box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .bottom-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.58rem;
+        gap: 2px;
+        flex: 1;
+        padding: 0.3rem 0;
+        transition: all 0.15s;
+        border-top: 2px solid transparent;
+      }
+
+      .bottom-nav-item i {
+        font-size: 1.15rem;
+      }
+
+      .bottom-nav-item.active,
+      .bottom-nav-item:hover {
+        color: #fff;
+        border-top-color: var(--primary-light);
+        background: rgba(255, 255, 255, 0.08);
+      }
+    }
   </style>
 </head>
+
 <body>
+  <!-- Toast Notification Container -->
+  <div id="toast-container"></div>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="bottom-nav" id="bottom-nav">
+    <a href="#" class="bottom-nav-item active" data-page="home">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a href="#" class="bottom-nav-item" data-page="nearby-rides">
+      <i class="fas fa-map-marker-alt"></i>
+      <span>Rides</span>
+    </a>
+    <a href="#" class="bottom-nav-item" data-page="create-ride">
+      <i class="fas fa-car"></i>
+      <span>Create</span>
+    </a>
+    <a href="#" class="bottom-nav-item" data-page="payment">
+      <i class="fas fa-credit-card"></i>
+      <span>Payment</span>
+    </a>
+    <a href="#" class="bottom-nav-item" data-page="safety">
+      <i class="fas fa-shield-alt"></i>
+      <span>Safety</span>
+    </a>
+  </nav>
+
   <!-- Loading Screen -->
   <div id="loading-screen" class="loading-screen">
     <div class="loading-spinner"></div>
@@ -1665,7 +1998,7 @@
       <a href="#" class="nav-item" data-page="ride-history">
         <i class="fas fa-history"></i>
         <span>Ride History</span>
-      </a>      <a href="#" class="nav-item" data-page="payment">
+      </a> <a href="#" class="nav-item" data-page="payment">
         <i class="fas fa-credit-card"></i>
         <span>Payment</span>
       </a>
@@ -1682,7 +2015,7 @@
           <div class="user-avatar" id="user-avatar">U</div>
           <span class="user-name" id="user-name">User</span>
           <i class="fas fa-chevron-down"></i>
-          
+
           <div class="profile-dropdown" id="profile-dropdown">
             <a href="#" class="dropdown-item" data-page="profile">
               <i class="fas fa-user"></i>
@@ -1705,7 +2038,9 @@
         <div id="home-page" class="page-content active">
           <div class="hero">
             <h1><i class="fas fa-leaf"></i> Welcome to GreenCommute</h1>
-            <p>Your eco-friendly ride-sharing companion. Plan smarter, greener commutes with people nearby. Earn green points, unlock achievements, and track your CO₂ savings—all while making the world a better place, one ride at a time.</p>
+            <p>Your eco-friendly ride-sharing companion. Plan smarter, greener commutes with people nearby. Earn green
+              points, unlock achievements, and track your CO₂ savings—all while making the world a better place, one
+              ride at a time.</p>
           </div>
 
           <div class="section">
@@ -1756,8 +2091,9 @@
           </div>
 
           <div id="map"></div>
-        </div>        <!-- Nearby Rides Page -->
-        <div id="nearby-rides-page" class="page-content" style="display: none;">          <div class="section">
+        </div> <!-- Nearby Rides Page -->
+        <div id="nearby-rides-page" class="page-content" style="display: none;">
+          <div class="section">
             <h2>Search Rides</h2>
             <form id="search-rides-form">
               <div class="form-row">
@@ -1791,7 +2127,7 @@
               </div>
             </form>
           </div>
-          
+
           <div class="section">
             <h2>Available Rides</h2>
             <div class="rides-grid" id="nearby-rides-container">
@@ -1812,7 +2148,8 @@
               <div class="form-group">
                 <label class="form-label">To</label>
                 <input type="text" class="form-input" name="destination" placeholder="Enter destination" required>
-              </div>              <div class="form-row">
+              </div>
+              <div class="form-row">
                 <div class="form-group">
                   <label class="form-label">Date</label>
                   <input type="date" class="form-input" name="date" required>
@@ -1866,23 +2203,24 @@
               <!-- Dynamic content will be loaded here -->
             </div>
           </div>
-        </div>        <!-- Payment Page -->
+        </div> <!-- Payment Page -->
         <div id="payment-page" class="page-content" style="display: none;">
           <div class="section">
             <h2><i class="fas fa-leaf"></i> Eco-Friendly Payment Methods</h2>
-            <p style="color: #666; margin-bottom: 1.5rem;">Choose sustainable payment options and earn green rewards!</p>
-            
+            <p style="color: #666; margin-bottom: 1.5rem;">Choose sustainable payment options and earn green rewards!
+            </p>
+
             <div id="payment-methods">
               <!-- Dynamic payment methods will be loaded here -->
             </div>
-            
+
             <div class="form-group">
               <button class="btn btn-primary btn-block" id="add-payment-btn">
                 <i class="fas fa-plus"></i> Add New Payment Method
               </button>
             </div>
           </div>
-          
+
           <div class="section">
             <h2><i class="fas fa-chart-line"></i> Green Rewards Summary</h2>
             <div class="eco-stats-grid">
@@ -1909,7 +2247,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="section">
             <h2><i class="fas fa-history"></i> Transaction History</h2>
             <div id="transaction-history">
@@ -1917,7 +2255,7 @@
               <p>No transactions yet. Complete a ride to see your green impact!</p>
             </div>
           </div>
-        </div>        <!-- Profile Page -->
+        </div> <!-- Profile Page -->
         <div id="profile-page" class="page-content" style="display: none;">
           <div class="section">
             <h2>My Profile</h2>
@@ -1928,7 +2266,8 @@
               </div>
               <div class="form-group">
                 <label class="form-label">Email</label>
-                <input type="email" class="form-input" id="profile-email" name="email" placeholder="Your email" readonly>
+                <input type="email" class="form-input" id="profile-email" name="email" placeholder="Your email"
+                  readonly>
               </div>
               <div class="form-group">
                 <label class="form-label">Phone Number</label>
@@ -1955,7 +2294,7 @@
           <div class="section">
             <h2><i class="fas fa-leaf"></i> Eco Preferences</h2>
             <p style="color: #666; margin-bottom: 1.5rem;">Customize your green commuting experience</p>
-            
+
             <div class="settings-grid">
               <div class="setting-item">
                 <div class="setting-header">
@@ -2214,7 +2553,7 @@
           <div class="section">
             <h2><i class="fas fa-target"></i> Green Goals</h2>
             <p style="color: #666; margin-bottom: 1.5rem;">Set and track your environmental impact goals</p>
-            
+
             <div class="goals-grid">
               <div class="goal-card">
                 <div class="goal-icon"><i class="fas fa-leaf"></i></div>
@@ -2267,7 +2606,8 @@
             </button>
             <button class="btn btn-outline btn-block" id="reset-settings-btn" style="margin-top: 0.75rem;">
               <i class="fas fa-undo"></i> Reset to Defaults
-            </button>          </div>
+            </button>
+          </div>
         </div>
 
         <!-- Safety Page -->
@@ -2275,8 +2615,9 @@
           <!-- Emergency Contacts Section -->
           <div class="section">
             <h2><i class="fas fa-shield-alt"></i> Safety Center</h2>
-            <p style="color: #666; margin-bottom: 1.5rem;">Your safety is our top priority. Manage your safety settings and emergency contacts.</p>
-            
+            <p style="color: #666; margin-bottom: 1.5rem;">Your safety is our top priority. Manage your safety settings
+              and emergency contacts.</p>
+
             <!-- Emergency Contacts -->
             <div class="safety-section">
               <h3><i class="fas fa-phone-alt"></i> Emergency Contacts</h3>
@@ -2396,7 +2737,7 @@
                   <i class="fas fa-flag"></i> Report Incident
                 </button>
               </div>
-            </div>            <!-- Safety Score -->
+            </div> <!-- Safety Score -->
             <div class="safety-section">
               <h3><i class="fas fa-star"></i> Your Safety Score</h3>
               <div class="safety-score-card">
@@ -2494,7 +2835,8 @@
           </div>
           <div class="form-group">
             <label class="form-label">Description</label>
-            <textarea class="form-input" id="incident-description" rows="4" placeholder="Please describe the incident in detail..." required></textarea>
+            <textarea class="form-input" id="incident-description" rows="4"
+              placeholder="Please describe the incident in detail..." required></textarea>
           </div>
           <div class="form-group">
             <label class="form-label">Severity</label>
@@ -2520,8 +2862,9 @@
     <div class="auth-banner">
       <div class="auth-banner-content">
         <h1><i class="fas fa-leaf"></i> GreenCommute</h1>
-        <p>Join thousands of eco-conscious commuters who are reducing their carbon footprint while saving money and making new connections.</p>
-        
+        <p>Join thousands of eco-conscious commuters who are reducing their carbon footprint while saving money and
+          making new connections.</p>
+
         <div class="auth-stats">
           <div class="auth-stat">
             <div class="auth-stat-number">15K+</div>
@@ -2538,14 +2881,14 @@
         </div>
       </div>
     </div>
-    
+
     <div class="auth-form-container">
       <div class="auth-form">
         <div class="auth-form-header">
           <h2>Welcome Back!</h2>
           <p>Log in to your GreenCommute account</p>
         </div>
-        
+
         <form id="login-form">
           <div class="form-group">
             <label class="form-label">Email</label>
@@ -2559,7 +2902,7 @@
             <i class="fas fa-sign-in-alt"></i> Login
           </button>
         </form>
-        
+
         <div class="auth-switch">
           Don't have an account? <a href="#" id="switch-to-register">Register Now</a>
         </div>
@@ -2572,8 +2915,9 @@
     <div class="auth-banner">
       <div class="auth-banner-content">
         <h1><i class="fas fa-leaf"></i> GreenCommute</h1>
-        <p>Join our community of eco-conscious commuters and start making a difference today. Share rides, reduce emissions, and connect with like-minded people.</p>
-        
+        <p>Join our community of eco-conscious commuters and start making a difference today. Share rides, reduce
+          emissions, and connect with like-minded people.</p>
+
         <div class="auth-stats">
           <div class="auth-stat">
             <div class="auth-stat-number">15K+</div>
@@ -2590,14 +2934,14 @@
         </div>
       </div>
     </div>
-    
+
     <div class="auth-form-container">
       <div class="auth-form">
         <div class="auth-form-header">
           <h2>Create Your Account</h2>
           <p>Join GreenCommute and start commuting responsibly</p>
         </div>
-        
+
         <form id="register-form">
           <div class="form-group">
             <label class="form-label">Full Name</label>
@@ -2624,11 +2968,12 @@
             <i class="fas fa-user-plus"></i> Create Account
           </button>
         </form>
-        
+
         <div class="auth-switch">
           Already have an account? <a href="#" id="switch-to-login">Login Instead</a>
         </div>
-      </div>    </div>
+      </div>
+    </div>
   </div>
 
   <!-- Add Payment Method Modal -->
@@ -2638,7 +2983,7 @@
         <h3><i class="fas fa-plus"></i> Add Payment Method</h3>
         <button class="close-modal" id="close-payment-modal">×</button>
       </div>
-      
+
       <form id="add-payment-form">
         <div class="form-group">
           <label class="form-label">Choose Payment Type</label>
@@ -2727,23 +3072,27 @@
 
         <!-- Green Wallet Info -->
         <div id="green-wallet-details" class="payment-details" style="display: none;">
-          <div style="background: linear-gradient(135deg, var(--primary-light), var(--success)); color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+          <div
+            style="background: linear-gradient(135deg, var(--primary-light), var(--success)); color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
             <h4 style="margin: 0 0 0.5rem 0;"><i class="fas fa-leaf"></i> Green Wallet</h4>
-            <p style="margin: 0; font-size: 0.9rem;">Earn eco-friendly rewards and use them for future rides! Starting bonus: ₹100</p>
+            <p style="margin: 0; font-size: 0.9rem;">Earn eco-friendly rewards and use them for future rides! Starting
+              bonus: ₹100</p>
           </div>
         </div>
 
         <!-- Eco Credits Info -->
         <div id="eco-credits-details" class="payment-details" style="display: none;">
-          <div style="background: linear-gradient(135deg, var(--accent), #f39c12); color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+          <div
+            style="background: linear-gradient(135deg, var(--accent), #f39c12); color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
             <h4 style="margin: 0 0 0.5rem 0;"><i class="fas fa-coins"></i> Eco Credits</h4>
-            <p style="margin: 0; font-size: 0.9rem;">Earn credits by sharing rides and reducing CO₂! Starting bonus: 50 credits</p>
+            <p style="margin: 0; font-size: 0.9rem;">Earn credits by sharing rides and reducing CO₂! Starting bonus: 50
+              credits</p>
           </div>
         </div>
 
         <div class="form-group">
           <label class="form-label">
-            <input type="checkbox" name="isDefault" style="margin-right: 0.5rem;"> 
+            <input type="checkbox" name="isDefault" style="margin-right: 0.5rem;">
             Set as default payment method
           </label>
         </div>
@@ -2757,6 +3106,31 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
+    // ==================== TOAST NOTIFICATIONS ====================
+    function showToast(msg, type) {
+      if (!type) {
+        const lower = ('' + msg).toLowerCase();
+        if (/success|saved|added|deleted|completed|booked|earned|joined|sent|reset/.test(lower)) type = 'success';
+        else if (/error|fail|unable|refused|blocked/.test(lower)) type = 'error';
+        else if (/please|invalid|required|enter a valid|not supported/.test(lower)) type = 'warning';
+        else type = 'info';
+      }
+      const icons = { success: 'fa-check-circle', error: 'fa-times-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' };
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <i class="fas ${icons[type] || icons.info} toast-icon"></i>
+        <span class="toast-message">${msg}</span>
+        <span class="toast-close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></span>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.classList.add('toast-exit');
+        setTimeout(() => toast.remove(), 260);
+      }, 3500);
+    }
+
     // Loading screen messages related to sustainability
     const loadingMessages = [
       "Calculating CO₂ saved by our community today...",
@@ -2809,18 +3183,18 @@
     // Update user profile in UI
     function updateUserProfile(user) {
       if (!user) return;
-      
+
       const userName = document.getElementById('user-name');
       const userAvatar = document.getElementById('user-avatar');
-      
+
       userName.textContent = user.name || 'User';
       userAvatar.textContent = (user.name || 'U').charAt(0).toUpperCase();
-      
+
       // Update profile form if on profile page
       const profileName = document.getElementById('profile-name');
       const profileEmail = document.getElementById('profile-email');
       const profileRole = document.getElementById('profile-role');
-      
+
       if (profileName && profileEmail && profileRole) {
         profileName.value = user.name || '';
         profileEmail.value = user.email || '';
@@ -2908,11 +3282,11 @@
           },
           (error) => {
             console.error('Error getting location:', error);
-            alert('Unable to fetch your location. Please enable location services.');
+            showToast('Unable to fetch your location. Please enable location services.');
           }
         );
       } else {
-        alert('Geolocation is not supported by your browser.');
+        showToast('Geolocation is not supported by your browser.');
       }
     }
 
@@ -2943,7 +3317,7 @@
     }    // Load nearby rides
     async function loadNearbyRides(searchParams = {}) {
       showLoading();
-      
+
       try {
         const token = localStorage.getItem('authToken');
         if (!token) {
@@ -2958,13 +3332,14 @@
         if (searchParams.vehicleType) queryParams.append('vehicleType', searchParams.vehicleType);
 
         // If no search params, we'll use the findMatches endpoint, otherwise use search endpoint
-        let response;        if (Object.keys(searchParams).length > 0 && (searchParams.origin || searchParams.destination)) {
+        let response; if (Object.keys(searchParams).length > 0 && (searchParams.origin || searchParams.destination)) {
           response = await fetch(`/api/rides/search?${queryParams.toString()}`, {
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${token}`
             }
-          });        } else {
+          });
+        } else {
           // Use findMatches endpoint with empty search to get all available rides
           response = await fetch('/api/rides/match', {
             method: 'POST',
@@ -2985,14 +3360,14 @@
 
         const rides = await response.json();
         const nearbyRidesContainer = document.getElementById('nearby-rides-container');
-        
+
         if (!nearbyRidesContainer) {
           hideLoading();
           return;
         }
-        
+
         nearbyRidesContainer.innerHTML = '';
-        
+
         if (rides.length === 0) {
           nearbyRidesContainer.innerHTML = '<p>No rides available matching your criteria. Try adjusting your search.</p>';
         } else {
@@ -3000,7 +3375,7 @@
             const departureDate = new Date(ride.departureTime);
             const formattedDate = departureDate.toLocaleDateString();
             const formattedTime = departureDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            
+
             nearbyRidesContainer.innerHTML += `
               <div class="ride-card" data-ride-id="${ride._id}">
                 <div class="ride-header">
@@ -3023,15 +3398,15 @@
             `;
           });
         }
-        
+
         // Add event listeners to book buttons
         document.querySelectorAll('.book-ride-btn').forEach(btn => {
-          btn.addEventListener('click', function() {
+          btn.addEventListener('click', function () {
             const rideId = this.getAttribute('data-ride-id');
             bookRide(rideId);
           });
         });
-        
+
       } catch (error) {
         console.error('Error loading rides:', error);
         const nearbyRidesContainer = document.getElementById('nearby-rides-container');
@@ -3048,7 +3423,7 @@
       try {
         const token = localStorage.getItem('authToken');
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        
+
         if (!token || !currentUser) {
           hideLoading();
           return;
@@ -3067,7 +3442,7 @@
 
         const rides = await response.json();
         const rideHistoryContainer = document.getElementById('ride-history-container');
-        
+
         if (!rideHistoryContainer) {
           hideLoading();
           return;
@@ -3080,7 +3455,7 @@
         } else {
           rides.forEach((ride) => {
             let departureTime, formattedDate, formattedTime;
-            
+
             if (ride.departureTime) {
               departureTime = new Date(ride.departureTime);
               formattedDate = departureTime.toLocaleDateString();
@@ -3095,7 +3470,7 @@
             }            // Handle different ride types (active vs completed)
             let driverName = 'Unknown Driver';
             let isCurrentUserDriver = false;
-            
+
             if (ride.driver && ride.driver.name) {
               driverName = ride.driver.name;
               isCurrentUserDriver = ride.driver._id === currentUser._id;
@@ -3115,11 +3490,10 @@
                   <p><i class="fas fa-map-marker-alt" style="color: red;"></i> To: ${ride.destination || 'Unknown'}</p>
                 </div>                <div class="ride-stats">                  <div class="ride-stat">
                     <i class="fas fa-info-circle"></i> 
-                    Status: &nbsp;<span style="color: ${
-                      ride.status === 'completed' ? 'green' : 
-                      ride.status === 'active' ? 'orange' :
-                      ride.status === 'cancelled' ? 'red' : 'gray'
-                    }">${(ride.status || 'Unknown').charAt(0).toUpperCase() + (ride.status || 'Unknown').slice(1)}</span>
+                    Status: &nbsp;<span style="color: ${ride.status === 'completed' ? 'green' :
+                ride.status === 'active' ? 'orange' :
+                  ride.status === 'cancelled' ? 'red' : 'gray'
+              }">${(ride.status || 'Unknown').charAt(0).toUpperCase() + (ride.status || 'Unknown').slice(1)}</span>
                   </div>
                   ${ride.seatsAvailable !== undefined ? `<div class="ride-stat"><i class="fas fa-user"></i> ${ride.seatsAvailable} seats left</div>` : ''}
                   ${ride.distanceKm ? `<div class="ride-stat"><i class="fas fa-route"></i> ${ride.distanceKm} km</div>` : ''}
@@ -3131,17 +3505,18 @@
                   </button>
                 ` : ''}
               </div>
-            `;          });
+            `;
+          });
         }
-        
+
         // Add event listeners to complete ride buttons
         document.querySelectorAll('.complete-ride-btn').forEach(btn => {
-          btn.addEventListener('click', function() {
+          btn.addEventListener('click', function () {
             const rideId = this.getAttribute('data-ride-id');
             completeRide(rideId);
           });
         });
-        
+
       } catch (error) {
         console.error('Error loading ride history:', error);
         const rideHistoryContainer = document.getElementById('ride-history-container');
@@ -3158,7 +3533,7 @@
       try {
         const token = localStorage.getItem('authToken');
         if (!token) {
-          alert('Please login to book a ride');
+          showToast('Please login to book a ride');
           hideLoading();
           return;
         }
@@ -3174,19 +3549,20 @@
         const data = await response.json();
 
         if (response.ok && data.success) {
-          alert('Ride booked successfully!');
+          showToast('Ride booked successfully!');
           // Refresh the nearby rides and ride history
           await loadNearbyRides();
           await loadRideHistory();
         } else {
-          alert(data.message || 'Failed to book ride');
+          showToast(data.message || 'Failed to book ride');
         }
       } catch (error) {
         console.error('Error booking ride:', error);
-        alert('Error booking ride. Please try again.');
+        showToast('Error booking ride. Please try again.');
       } finally {
         hideLoading();
-      }    }
+      }
+    }
 
     // Complete a ride
     async function completeRide(rideId) {
@@ -3195,9 +3571,9 @@
       try {
         const token = localStorage.getItem('authToken');
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        
+
         if (!token || !currentUser) {
-          alert('Please login to complete a ride');
+          showToast('Please login to complete a ride');
           hideLoading();
           return;
         }
@@ -3205,14 +3581,14 @@
         // Prompt for ride details
         const distanceKm = prompt('Enter the distance traveled (in km):');
         if (!distanceKm || isNaN(distanceKm)) {
-          alert('Please enter a valid distance');
+          showToast('Please enter a valid distance');
           hideLoading();
           return;
         }
 
         const riderRating = prompt('Rate the passengers (1-5 stars):');
         if (!riderRating || isNaN(riderRating) || riderRating < 1 || riderRating > 5) {
-          alert('Please enter a valid rating between 1-5');
+          showToast('Please enter a valid rating between 1-5');
           hideLoading();
           return;
         }
@@ -3236,15 +3612,15 @@
         const data = await response.json();
 
         if (response.ok) {
-          alert('Ride completed successfully! CO₂ saved and green points earned.');
+          showToast('Ride completed successfully! CO₂ saved and green points earned.');
           // Refresh the ride history
           await loadRideHistory();
         } else {
-          alert(data.message || 'Failed to complete ride');
+          showToast(data.message || 'Failed to complete ride');
         }
       } catch (error) {
         console.error('Error completing ride:', error);
-        alert('Error completing ride. Please try again.');
+        showToast('Error completing ride. Please try again.');
       } finally {
         hideLoading();
       }
@@ -3269,7 +3645,7 @@
 
         const data = await response.json();
         const paymentMethodsContainer = document.getElementById('payment-methods');
-        
+
         if (!paymentMethodsContainer) return;
 
         // Clear existing content except the add button
@@ -3302,7 +3678,7 @@
     function createPaymentMethodCard(method) {
       const card = document.createElement('div');
       card.className = `payment-method-card ${method.isDefault ? 'default' : ''}`;
-      
+
       let icon = 'fas fa-credit-card';
       let displayName = method.type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
       let details = '';
@@ -3369,7 +3745,7 @@
 
       const ecoCreditsEl = document.getElementById('total-eco-credits');
       const greenWalletEl = document.getElementById('green-wallet-balance');
-      
+
       if (ecoCreditsEl) ecoCreditsEl.textContent = totalEcoCredits;
       if (greenWalletEl) greenWalletEl.textContent = `₹${greenWalletBalance.toFixed(2)}`;
     }
@@ -3393,12 +3769,12 @@
 
         const data = await response.json();
         const transactionContainer = document.getElementById('transaction-history');
-        
+
         if (!transactionContainer) return;
 
         if (data.transactions && data.transactions.length > 0) {
           transactionContainer.innerHTML = '';
-          
+
           // Update total CO2 saved
           const totalCO2 = data.transactions.reduce((sum, t) => sum + (t.carbonOffsetKg || 0), 0);
           const co2SavedEl = document.getElementById('total-co2-saved');
@@ -3420,10 +3796,10 @@
     function createTransactionItem(transaction) {
       const item = document.createElement('div');
       item.className = 'transaction-item';
-      
+
       const date = new Date(transaction.createdAt).toLocaleDateString();
       const time = new Date(transaction.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      
+
       item.innerHTML = `
         <div class="transaction-details">
           <h4>${transaction.description}</h4>
@@ -3451,11 +3827,11 @@
     // Add payment method
     async function addPaymentMethod(formData) {
       showLoading();
-      
+
       try {
         const token = localStorage.getItem('authToken');
         if (!token) {
-          alert('Please login to add payment method');
+          showToast('Please login to add payment method');
           return;
         }
 
@@ -3471,16 +3847,16 @@
         const data = await response.json();
 
         if (response.ok && data.success) {
-          alert('Payment method added successfully!');
+          showToast('Payment method added successfully!');
           document.getElementById('payment-modal').classList.remove('show');
           document.getElementById('add-payment-form').reset();
           await loadPaymentMethods();
         } else {
-          alert(data.message || 'Failed to add payment method');
+          showToast(data.message || 'Failed to add payment method');
         }
       } catch (error) {
         console.error('Error adding payment method:', error);
-        alert('Error adding payment method. Please try again.');
+        showToast('Error adding payment method. Please try again.');
       } finally {
         hideLoading();
       }
@@ -3493,7 +3869,7 @@
       }
 
       showLoading();
-      
+
       try {
         const token = localStorage.getItem('authToken');
         const response = await fetch(`/api/rides/payment/methods/${paymentMethodId}`, {
@@ -3506,14 +3882,14 @@
         const data = await response.json();
 
         if (response.ok && data.success) {
-          alert('Payment method deleted successfully!');
+          showToast('Payment method deleted successfully!');
           await loadPaymentMethods();
         } else {
-          alert(data.message || 'Failed to delete payment method');
+          showToast(data.message || 'Failed to delete payment method');
         }
       } catch (error) {
         console.error('Error deleting payment method:', error);
-        alert('Error deleting payment method. Please try again.');
+        showToast('Error deleting payment method. Please try again.');
       } finally {
         hideLoading();
       }
@@ -3523,25 +3899,25 @@
     function loadSettings() {
       // Load saved settings from localStorage
       const settings = JSON.parse(localStorage.getItem('userSettings')) || getDefaultSettings();
-      
+
       // Apply settings to UI
       document.getElementById('pref-electric').checked = settings.vehiclePreferences.electric;
       document.getElementById('pref-hybrid').checked = settings.vehiclePreferences.hybrid;
       document.getElementById('pref-bike').checked = settings.vehiclePreferences.bike;
       document.getElementById('pref-public').checked = settings.vehiclePreferences.public;
-      
+
       document.getElementById('notif-eco-rides').checked = settings.notifications.ecoRides;
       document.getElementById('notif-co2-report').checked = settings.notifications.co2Report;
       document.getElementById('notif-achievements').checked = settings.notifications.achievements;
       document.getElementById('notif-challenges').checked = settings.notifications.challenges;
-      
+
       document.getElementById('max-distance').value = settings.ridePreferences.maxDistance;
       document.getElementById('preferred-time').value = settings.ridePreferences.preferredTime;
-      
+
       document.getElementById('profile-visibility').value = settings.privacy.profileVisibility;
-      document.getElementById('location-sharing').checked = settings.privacy.locationSharing;      document.getElementById('distance-unit').value = settings.appPreferences.distanceUnit;
+      document.getElementById('location-sharing').checked = settings.privacy.locationSharing; document.getElementById('distance-unit').value = settings.appPreferences.distanceUnit;
       document.getElementById('currency').value = settings.appPreferences.currency;
-      
+
       // Always apply the theme from settings
       applyTheme(settings.appPreferences.theme);
       document.querySelectorAll('.theme-option').forEach(option => {
@@ -3611,19 +3987,19 @@
           distanceUnit: document.getElementById('distance-unit').value,
           currency: document.getElementById('currency').value
         }
-      };      localStorage.setItem('userSettings', JSON.stringify(settings));
-      
+      }; localStorage.setItem('userSettings', JSON.stringify(settings));
+
       // Always apply the selected theme immediately
       applyTheme(settings.appPreferences.theme);
-      
-      alert('Settings saved successfully! Your preferences will enhance your eco-friendly commuting experience.');
+
+      showToast('Settings saved successfully! Your preferences will enhance your eco-friendly commuting experience.');
     }    // Apply theme
     function applyTheme(theme) {
       const root = document.documentElement;
-      
+
       // Remove all theme classes first
       document.body.classList.remove('dark-mode', 'blue-mode');
-      
+
       if (theme === 'blue') {
         document.body.classList.add('blue-mode');
         root.style.setProperty('--primary', '#3498db');
@@ -3648,7 +4024,7 @@
         root.style.setProperty('--text-dark', '#ecf0f1');
         document.body.style.backgroundColor = '#1a1a1a';
         document.body.style.color = '#ecf0f1';
-        
+
       } else {
         // Reset to original green theme - remove all overrides
         root.style.removeProperty('--primary');
@@ -3669,7 +4045,7 @@
         loadSettings();
         // Apply the default green theme
         applyTheme('green');
-        alert('Settings have been reset to default values.');
+        showToast('Settings have been reset to default values.');
       }
     }
 
@@ -3678,7 +4054,7 @@
       if (confirm('This will clear app cache and may improve performance. Continue?')) {
         // Simulate cache clearing
         document.getElementById('cache-size').textContent = '0.5 MB';
-        alert('Cache cleared successfully!');
+        showToast('Cache cleared successfully!');
       }
     }
 
@@ -3689,16 +4065,16 @@
         settings: JSON.parse(localStorage.getItem('userSettings')),
         exportDate: new Date().toISOString()
       };
-      
+
       const dataStr = JSON.stringify(userData, null, 2);
-      const dataBlob = new Blob([dataStr], {type: 'application/json'});
-      
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+
       const link = document.createElement('a');
       link.href = URL.createObjectURL(dataBlob);
       link.download = 'greencommute-data.json';
       link.click();
-      
-      alert('Your data has been downloaded successfully!');
+
+      showToast('Your data has been downloaded successfully!');
     }
 
     // Delete payment method
@@ -3708,7 +4084,7 @@
       }
 
       showLoading();
-      
+
       try {
         const token = localStorage.getItem('authToken');
         const response = await fetch(`/api/rides/payment/methods/${paymentMethodId}`, {
@@ -3721,14 +4097,14 @@
         const data = await response.json();
 
         if (response.ok && data.success) {
-          alert('Payment method deleted successfully!');
+          showToast('Payment method deleted successfully!');
           await loadPaymentMethods();
         } else {
-          alert(data.message || 'Failed to delete payment method');
+          showToast(data.message || 'Failed to delete payment method');
         }
       } catch (error) {
         console.error('Error deleting payment method:', error);
-        alert('Error deleting payment method. Please try again.');
+        showToast('Error deleting payment method. Please try again.');
       } finally {
         hideLoading();
       }
@@ -3741,9 +4117,9 @@
       try {
         const token = localStorage.getItem('authToken');
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        
+
         if (!token || !currentUser) {
-          alert('Please login to complete a ride');
+          showToast('Please login to complete a ride');
           hideLoading();
           return;
         }
@@ -3751,14 +4127,14 @@
         // Prompt for ride details
         const distanceKm = prompt('Enter the distance traveled (in km):');
         if (!distanceKm || isNaN(distanceKm)) {
-          alert('Please enter a valid distance');
+          showToast('Please enter a valid distance');
           hideLoading();
           return;
         }
 
         const riderRating = prompt('Rate the passengers (1-5 stars):');
         if (!riderRating || isNaN(riderRating) || riderRating < 1 || riderRating > 5) {
-          alert('Please enter a valid rating between 1-5');
+          showToast('Please enter a valid rating between 1-5');
           hideLoading();
           return;
         }
@@ -3782,15 +4158,15 @@
         const data = await response.json();
 
         if (response.ok) {
-          alert('Ride completed successfully! CO₂ saved and green points earned.');
+          showToast('Ride completed successfully! CO₂ saved and green points earned.');
           // Refresh the ride history
           await loadRideHistory();
         } else {
-          alert(data.message || 'Failed to complete ride');
+          showToast(data.message || 'Failed to complete ride');
         }
       } catch (error) {
         console.error('Error completing ride:', error);
-        alert('Error completing ride. Please try again.');
+        showToast('Error completing ride. Please try again.');
       } finally {
         hideLoading();
       }
@@ -3800,13 +4176,14 @@
 
     // Navigation function
     function navigateTo(pageName) {
-      // Update active navigation item
-      document.querySelectorAll('.nav-item').forEach(item => {
+      // Update active navigation item (sidebar + bottom nav)
+      document.querySelectorAll('.nav-item, .bottom-nav-item').forEach(item => {
         item.classList.remove('active');
       });
 
-      const navItem = document.querySelector(`.nav-item[data-page="${pageName}"]`);
-      if (navItem) navItem.classList.add('active');
+      document.querySelectorAll(`.nav-item[data-page="${pageName}"], .bottom-nav-item[data-page="${pageName}"]`).forEach(el => {
+        el.classList.add('active');
+      });
 
       // Update page title
       document.getElementById('page-title').textContent = pageName
@@ -3829,7 +4206,8 @@
       if (pageName === 'nearby-rides') {
         loadNearbyRides();
       } else if (pageName === 'ride-history') {
-        loadRideHistory();      } else if (pageName === 'payment') {
+        loadRideHistory();
+      } else if (pageName === 'payment') {
         loadPaymentMethods();
         loadTransactionHistory();
       } else if (pageName === 'settings') {
@@ -3866,14 +4244,14 @@
           localStorage.setItem('authToken', data.token);
           localStorage.setItem('currentUser', JSON.stringify(data.user));
 
-          alert('Login successful!');
+          showToast('Login successful!');
           checkAuth(); // Recheck authentication and load the app
         } else {
-          alert(data.message || 'Login failed');
+          showToast(data.message || 'Login failed');
         }
       } catch (error) {
         console.error('Error logging in:', error);
-        alert('Error logging in. Please check your connection and try again.');
+        showToast('Error logging in. Please check your connection and try again.');
       } finally {
         hideLoading();
       }
@@ -3907,14 +4285,14 @@
           localStorage.setItem('authToken', data.token);
           localStorage.setItem('currentUser', JSON.stringify(data.user));
 
-          alert('Registration successful!');
+          showToast('Registration successful!');
           checkAuth(); // Recheck authentication and load the app
         } else {
-          alert(data.message || 'Registration failed');
+          showToast(data.message || 'Registration failed');
         }
       } catch (error) {
         console.error('Error registering user:', error);
-        alert('Error registering user. Please check your connection and try again.');
+        showToast('Error registering user. Please check your connection and try again.');
       } finally {
         hideLoading();
       }
@@ -3923,91 +4301,91 @@
     // Handle logout
     function handleLogout() {
       showLoading();
-      
+
       // Simulate API call
       setTimeout(() => {
         localStorage.removeItem('authToken');
         localStorage.removeItem('currentUser');
-        
+
         hideLoading();
         checkAuth();
       }, 1000);
     }
 
     // Document ready function
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       // Initialize application
       checkAuth();
-      
-      // Setup navigation
-      document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', function(e) {
+
+      // Setup navigation (sidebar + bottom nav)
+      document.querySelectorAll('.nav-item, .bottom-nav-item').forEach(item => {
+        item.addEventListener('click', function (e) {
           e.preventDefault();
           const page = this.getAttribute('data-page');
           navigateTo(page);
         });
       });
-      
+
       // Login form submission
       document.getElementById('login-form').addEventListener('submit', handleLogin);
-      
+
       // Register form submission
       document.getElementById('register-form').addEventListener('submit', handleRegister);
-      
+
       // Logout button
-      document.getElementById('logout-btn').addEventListener('click', function(e) {
+      document.getElementById('logout-btn').addEventListener('click', function (e) {
         e.preventDefault();
         handleLogout();
       });
-      
+
       // Profile dropdown toggle
-      document.getElementById('user-profile').addEventListener('click', function() {
+      document.getElementById('user-profile').addEventListener('click', function () {
         document.getElementById('profile-dropdown').classList.toggle('show');
       });
-      
+
       // Close dropdown when clicking outside
-      document.addEventListener('click', function(e) {
+      document.addEventListener('click', function (e) {
         const dropdown = document.getElementById('profile-dropdown');
         const profile = document.getElementById('user-profile');
-        
+
         if (!profile.contains(e.target) && dropdown.classList.contains('show')) {
           dropdown.classList.remove('show');
         }
       });
-      
+
       // Switch between login and register
-      document.getElementById('switch-to-register').addEventListener('click', function(e) {
+      document.getElementById('switch-to-register').addEventListener('click', function (e) {
         e.preventDefault();
         document.getElementById('login-page').style.display = 'none';
         document.getElementById('register-page').style.display = 'flex';
       });
-      
-      document.getElementById('switch-to-login').addEventListener('click', function(e) {
+
+      document.getElementById('switch-to-login').addEventListener('click', function (e) {
         e.preventDefault();
         document.getElementById('register-page').style.display = 'none';
         document.getElementById('login-page').style.display = 'flex';
       });
-      
+
       // Profile page navigation
       document.querySelectorAll('.dropdown-item').forEach(item => {
-        item.addEventListener('click', function(e) {
+        item.addEventListener('click', function (e) {
           e.preventDefault();
-          
+
           if (this.id === 'logout-btn') return; // Logout is handled separately
-          
+
           document.getElementById('profile-dropdown').classList.remove('show');
           const page = this.getAttribute('data-page');
           navigateTo(page);
         });
       });
-      
+
       // Book ride form
       const bookRideForm = document.getElementById('book-ride-form');
       if (bookRideForm) {
-        bookRideForm.addEventListener('submit', function(e) {
+        bookRideForm.addEventListener('submit', function (e) {
           e.preventDefault();
           showLoading();
-          
+
           // Simulate API call
           setTimeout(() => {
             hideLoading();
@@ -4015,34 +4393,34 @@
           }, 1500);
         });
       }
-      
+
       // Quick action buttons
       const findRidesBtn = document.getElementById('find-rides-btn');
       if (findRidesBtn) {
-        findRidesBtn.addEventListener('click', function() {
+        findRidesBtn.addEventListener('click', function () {
           navigateTo('nearby-rides');
         });
       }
-      
+
       const offerRideBtn = document.getElementById('offer-ride-btn');
       if (offerRideBtn) {
-        offerRideBtn.addEventListener('click', function() {
+        offerRideBtn.addEventListener('click', function () {
           // For demo purposes, just navigate to book ride
           navigateTo('book-ride');
         });
       }
-        // Search rides form
+      // Search rides form
       const searchRidesForm = document.getElementById('search-rides-form');
       if (searchRidesForm) {
-        searchRidesForm.addEventListener('submit', function(e) {
+        searchRidesForm.addEventListener('submit', function (e) {
           e.preventDefault();
-          
+
           const searchParams = {
             origin: document.getElementById('search-origin').value,
             destination: document.getElementById('search-destination').value,
             vehicleType: document.getElementById('search-vehicle-type').value
           };
-          
+
           loadNearbyRides(searchParams);
         });
       }
@@ -4050,12 +4428,12 @@
       // Show all rides button
       const showAllRidesBtn = document.getElementById('show-all-rides-btn');
       if (showAllRidesBtn) {
-        showAllRidesBtn.addEventListener('click', function() {
+        showAllRidesBtn.addEventListener('click', function () {
           // Clear search form
           document.getElementById('search-origin').value = '';
           document.getElementById('search-destination').value = '';
           document.getElementById('search-vehicle-type').value = '';
-          
+
           // Load all rides
           loadNearbyRides();
         });
@@ -4064,21 +4442,21 @@
       // Profile form
       const profileForm = document.getElementById('profile-form');
       if (profileForm) {
-        profileForm.addEventListener('submit', function(e) {
+        profileForm.addEventListener('submit', function (e) {
           e.preventDefault();
           showLoading();
-          
+
           // Simulate API call
           setTimeout(() => {
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             currentUser.name = document.getElementById('profile-name').value;
             currentUser.role = document.getElementById('profile-role').value;
-            
+
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
             updateUserProfile(currentUser);
-            
+
             hideLoading();
-            alert('Profile updated successfully!');
+            showToast('Profile updated successfully!');
           }, 1500);
         });
       }      // Payment modal functionality
@@ -4088,7 +4466,7 @@
       const addPaymentForm = document.getElementById('add-payment-form');
 
       if (addPaymentBtn) {
-        addPaymentBtn.addEventListener('click', function() {
+        addPaymentBtn.addEventListener('click', function () {
           paymentModal.classList.add('show');
           // Populate years for card expiry
           const yearSelect = document.querySelector('select[name="expiryYear"]');
@@ -4105,14 +4483,14 @@
       }
 
       if (closePaymentModal) {
-        closePaymentModal.addEventListener('click', function() {
+        closePaymentModal.addEventListener('click', function () {
           paymentModal.classList.remove('show');
         });
       }
 
       // Close modal when clicking outside
       if (paymentModal) {
-        paymentModal.addEventListener('click', function(e) {
+        paymentModal.addEventListener('click', function (e) {
           if (e.target === paymentModal) {
             paymentModal.classList.remove('show');
           }
@@ -4121,20 +4499,20 @@
 
       // Payment type selection
       document.querySelectorAll('.payment-type-option').forEach(option => {
-        option.addEventListener('click', function() {
+        option.addEventListener('click', function () {
           // Remove selected class from all options
           document.querySelectorAll('.payment-type-option').forEach(opt => {
             opt.classList.remove('selected');
           });
-          
+
           // Add selected class to clicked option
           this.classList.add('selected');
-          
+
           // Hide all payment details
           document.querySelectorAll('.payment-details').forEach(detail => {
             detail.style.display = 'none';
           });
-          
+
           // Show relevant payment details
           const type = this.getAttribute('data-type');
           if (type === 'credit_card' || type === 'debit_card') {
@@ -4153,21 +4531,21 @@
 
       // Add payment form submission
       if (addPaymentForm) {
-        addPaymentForm.addEventListener('submit', function(e) {
+        addPaymentForm.addEventListener('submit', function (e) {
           e.preventDefault();
-          
+
           const selectedType = document.querySelector('.payment-type-option.selected');
           if (!selectedType) {
-            alert('Please select a payment type');
+            showToast('Please select a payment type');
             return;
           }
-          
+
           const formData = new FormData(this);
           const paymentData = {
             type: selectedType.getAttribute('data-type'),
             isDefault: formData.get('isDefault') === 'on'
           };
-          
+
           // Add type-specific data
           if (paymentData.type === 'credit_card' || paymentData.type === 'debit_card') {
             paymentData.cardNumber = formData.get('cardNumber').replace(/\s/g, '');
@@ -4179,7 +4557,7 @@
           } else if (paymentData.type === 'paypal') {
             paymentData.email = formData.get('email');
           }
-          
+
           addPaymentMethod(paymentData);
         });
       }
@@ -4187,12 +4565,13 @@
       // Card number formatting
       const cardNumberInput = document.querySelector('input[name="cardNumber"]');
       if (cardNumberInput) {
-        cardNumberInput.addEventListener('input', function(e) {
+        cardNumberInput.addEventListener('input', function (e) {
           let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
           let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
           if (formattedValue.length > 19) formattedValue = formattedValue.substr(0, 19);
           e.target.value = formattedValue;
-        });      }
+        });
+      }
 
       // Settings functionality
       const saveSettingsBtn = document.getElementById('save-settings-btn');
@@ -4219,23 +4598,23 @@
       }
 
       if (changePasswordBtn) {
-        changePasswordBtn.addEventListener('click', function() {
-          alert('Password change functionality will be implemented with backend integration.');
+        changePasswordBtn.addEventListener('click', function () {
+          showToast('Password change functionality will be implemented with backend integration.');
         });
       }
 
       if (enable2FABtn) {
-        enable2FABtn.addEventListener('click', function() {
-          alert('Two-factor authentication setup will be available soon!');
+        enable2FABtn.addEventListener('click', function () {
+          showToast('Two-factor authentication setup will be available soon!');
         });
       }
 
       // Theme selection
       document.querySelectorAll('.theme-option').forEach(option => {
-        option.addEventListener('click', function() {
+        option.addEventListener('click', function () {
           document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('selected'));
           this.classList.add('selected');
-          
+
           const theme = this.dataset.theme;
           applyTheme(theme);
         });
@@ -4243,17 +4622,17 @@
 
       // Goal adjustment buttons
       document.querySelectorAll('.goal-card .btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
+        btn.addEventListener('click', function (e) {
           e.preventDefault();
           const goalType = this.closest('.goal-card').querySelector('h4').textContent;
           const newGoal = prompt(`Enter your new ${goalType.toLowerCase()} goal:`);
           if (newGoal && !isNaN(newGoal)) {
-            alert(`${goalType} goal updated to ${newGoal}!`);
+            showToast(`${goalType} goal updated to ${newGoal}!`);
             // Update the progress display
             const progressText = this.closest('.goal-card').querySelector('.progress-text');
             const currentValue = progressText.textContent.split('/')[0];
             progressText.textContent = `${currentValue}/${newGoal} ${goalType.includes('CO₂') ? 'kg CO₂' : goalType.includes('Points') ? 'points' : 'rides'}`;
-            
+
             // Update progress bar
             const progressFill = this.closest('.goal-card').querySelector('.progress-fill');
             const percentage = (parseInt(currentValue) / parseInt(newGoal)) * 100;
@@ -4268,14 +4647,14 @@
 
       const createRideForm = document.getElementById('create-ride-form');
       if (createRideForm) {
-        createRideForm.addEventListener('submit', async function(e) {
+        createRideForm.addEventListener('submit', async function (e) {
           e.preventDefault();
           showLoading();
-      
+
           try {
             const token = localStorage.getItem('authToken');
             if (!token) {
-              alert('Please login to create a ride');
+              showToast('Please login to create a ride');
               hideLoading();
               return;
             }
@@ -4301,19 +4680,20 @@
             const data = await response.json();
 
             if (response.ok) {
-              alert('Ride created successfully!');
+              showToast('Ride created successfully!');
               this.reset(); // Reset the form
               navigateTo('nearby-rides');
             } else {
-              alert(data.message || 'Failed to create ride');
+              showToast(data.message || 'Failed to create ride');
             }
           } catch (error) {
             console.error('Error creating ride:', error);
-            alert('Error creating ride. Please try again.');
+            showToast('Error creating ride. Please try again.');
           } finally {
             hideLoading();
           }
-        });      }
+        });
+      }
     });
 
     // Safety Page Functions
@@ -4407,7 +4787,7 @@
       if (confirm(`Call ${phone}?`)) {
         window.location.href = `tel:${phone}`;
       }
-    }    async function removeEmergencyContact(contactId) {
+    } async function removeEmergencyContact(contactId) {
       if (!confirm('Remove this emergency contact?')) return;
 
       try {
@@ -4436,18 +4816,19 @@
         }
       } catch (error) {
         console.error('Error removing emergency contact:', error);
-        alert('Failed to remove emergency contact. Please try again.');
+        showToast('Failed to remove emergency contact. Please try again.');
       }
     }
 
     // Add contact form handler
-    document.addEventListener('DOMContentLoaded', function() {      const addContactForm = document.getElementById('add-contact-form');
+    document.addEventListener('DOMContentLoaded', function () {
+      const addContactForm = document.getElementById('add-contact-form');
       if (addContactForm) {
-        addContactForm.addEventListener('submit', async function(e) {
+        addContactForm.addEventListener('submit', async function (e) {
           e.preventDefault();
-          
+
           if (emergencyContacts.length >= 5) {
-            alert('You can only have up to 5 emergency contacts.');
+            showToast('You can only have up to 5 emergency contacts.');
             return;
           }
 
@@ -4456,7 +4837,7 @@
           const relationship = document.getElementById('contact-relationship').value;
 
           if (!name || !phone || !relationship) {
-            alert('Please fill in all fields.');
+            showToast('Please fill in all fields.');
             return;
           }
 
@@ -4476,43 +4857,43 @@
               if (response.ok) {
                 hideAddContactModal();
                 loadEmergencyContacts();
-                alert('Emergency contact added successfully!');
+                showToast('Emergency contact added successfully!');
                 return;
               } else {
                 const error = await response.json();
-                alert(error.error || 'Failed to add emergency contact');
+                showToast(error.error || 'Failed to add emergency contact');
                 return;
               }
             }
 
             // Fallback to localStorage
-            const exists = emergencyContacts.some(contact => 
+            const exists = emergencyContacts.some(contact =>
               contact.phone === phone || contact.name.toLowerCase() === name.toLowerCase()
             );
 
             if (exists) {
-              alert('This contact already exists.');
+              showToast('This contact already exists.');
               return;
             }
 
             const newContact = { name, phone, relationship };
             emergencyContacts.push(newContact);
             localStorage.setItem('emergencyContacts', JSON.stringify(emergencyContacts));
-            
+
             hideAddContactModal();
             loadEmergencyContacts();
-            alert('Emergency contact added successfully!');
+            showToast('Emergency contact added successfully!');
           } catch (error) {
             console.error('Error adding emergency contact:', error);
-            alert('Failed to add emergency contact. Please try again.');
+            showToast('Failed to add emergency contact. Please try again.');
           }
         });
       }      // Incident report form handler
       const incidentForm = document.getElementById('incident-report-form');
       if (incidentForm) {
-        incidentForm.addEventListener('submit', async function(e) {
+        incidentForm.addEventListener('submit', async function (e) {
           e.preventDefault();
-          
+
           const incidentData = {
             type: document.getElementById('incident-type').value,
             rideId: document.getElementById('incident-ride-id').value,
@@ -4535,8 +4916,8 @@
 
               if (response.ok) {
                 hideIncidentReportModal();
-                alert('Incident report submitted successfully. Our safety team will review it shortly.');
-                
+                showToast('Incident report submitted successfully. Our safety team will review it shortly.');
+
                 // If it's an emergency, show additional options
                 if (incidentData.severity === 'emergency') {
                   if (confirm('This is an emergency. Would you like to call emergency services?')) {
@@ -4546,7 +4927,7 @@
                 return;
               } else {
                 const error = await response.json();
-                alert(error.error || 'Failed to submit incident report');
+                showToast(error.error || 'Failed to submit incident report');
                 return;
               }
             }
@@ -4558,10 +4939,10 @@
               timestamp: new Date().toISOString()
             });
             localStorage.setItem('incidents', JSON.stringify(incidents));
-            
+
             hideIncidentReportModal();
-            alert('Incident report submitted successfully. Our safety team will review it shortly.');
-            
+            showToast('Incident report submitted successfully. Our safety team will review it shortly.');
+
             // If it's an emergency, show additional options
             if (incidentData.severity === 'emergency') {
               if (confirm('This is an emergency. Would you like to call emergency services?')) {
@@ -4570,13 +4951,13 @@
             }
           } catch (error) {
             console.error('Error submitting incident report:', error);
-            alert('Failed to submit incident report. Please try again.');
+            showToast('Failed to submit incident report. Please try again.');
           }
         });
       }      // Load emergency contacts when safety page is accessed
       const safetyNav = document.querySelector('.nav-item[data-page="safety"]');
       if (safetyNav) {
-        safetyNav.addEventListener('click', function() {
+        safetyNav.addEventListener('click', function () {
           setTimeout(() => {
             loadEmergencyContacts();
             loadSafetyStats();
@@ -4607,7 +4988,7 @@
       } catch (error) {
         console.error('Error loading safety stats:', error);
       }
-    }    function updateSafetyScoreDisplay(stats) {
+    } function updateSafetyScoreDisplay(stats) {
       // Update safety score circle
       const scoreNumber = document.getElementById('safety-score-display');
       if (scoreNumber) {
@@ -4618,7 +4999,7 @@
       const totalRidesMetric = document.getElementById('total-rides-metric');
       const safetyReportsMetric = document.getElementById('safety-reports-metric');
       const positiveFeedbackMetric = document.getElementById('positive-feedback-metric');
-      
+
       if (totalRidesMetric) totalRidesMetric.textContent = stats.totalRides;
       if (safetyReportsMetric) safetyReportsMetric.textContent = stats.safetyReports;
       if (positiveFeedbackMetric) positiveFeedbackMetric.textContent = `${stats.positiveFeedbackRate}%`;
@@ -4644,19 +5025,19 @@
       const safetyAlertsToggle = document.getElementById('safety-alerts');
 
       if (liveTrackingToggle) {
-        liveTrackingToggle.addEventListener('change', function() {
+        liveTrackingToggle.addEventListener('change', function () {
           const enabled = this.checked;
           localStorage.setItem('liveTracking', enabled);
-          
+
           if (enabled) {
             // Request location permission
             if (navigator.geolocation) {
               navigator.geolocation.getCurrentPosition(
-                function(position) {
+                function (position) {
                   console.log('Live tracking enabled');
                 },
-                function(error) {
-                  alert('Location access is required for live tracking.');
+                function (error) {
+                  showToast('Location access is required for live tracking.');
                   liveTrackingToggle.checked = false;
                   localStorage.setItem('liveTracking', false);
                 }
@@ -4673,7 +5054,7 @@
       }
 
       if (safetyAlertsToggle) {
-        safetyAlertsToggle.addEventListener('change', function() {
+        safetyAlertsToggle.addEventListener('change', function () {
           localStorage.setItem('safetyAlerts', this.checked);
         });
 
@@ -4694,4 +5075,5 @@
     }
   </script>
 </body>
+
 </html>
